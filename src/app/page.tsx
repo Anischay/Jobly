@@ -6,6 +6,51 @@ import { useRouter } from 'next/navigation'
 import { FaBriefcase, FaSearch, FaUserTie, FaLightbulb, FaHandshake, FaRocket, FaBars, FaTimes, FaHeart, FaComments, FaStar, FaGraduationCap, FaPalette, FaCogs } from 'react-icons/fa'
 import CountdownTimer from '@/components/CountdownTimer'
 import MatchingSystem from '@/components/MatchingSystem'
+import JobCard from '@/components/JobCard'
+
+const sampleJob = {
+  id: '1',
+  title: 'Senior Full Stack Developer',
+  company: 'TechCorp Solutions',
+  location: 'San Francisco, CA',
+  type: 'Full-time',
+  salary: '$120,000 - $180,000',
+  description: 'We are seeking an experienced Full Stack Developer to join our dynamic team. You will be responsible for developing and maintaining web applications, collaborating with cross-functional teams, and mentoring junior developers.',
+  requirements: [
+    "Bachelor's degree in Computer Science or related field",
+    '5+ years of experience with React and Node.js',
+    'Strong understanding of web technologies and best practices',
+    'Experience with cloud platforms (AWS/Azure)',
+    'Excellent problem-solving and communication skills'
+  ],
+  responsibilities: [
+    'Design and implement scalable web applications',
+    'Write clean, maintainable, and efficient code',
+    'Collaborate with product managers and designers',
+    'Mentor junior developers and conduct code reviews',
+    'Participate in architectural decisions'
+  ],
+  benefits: [
+    'Competitive salary and equity package',
+    'Health, dental, and vision insurance',
+    'Flexible work hours and remote options',
+    'Professional development budget',
+    'Generous vacation policy'
+  ],
+  companyInfo: {
+    name: 'TechCorp Solutions',
+    size: '50-200 employees',
+    industry: 'Software Development',
+    description: 'TechCorp Solutions is a leading software development company specializing in building innovative solutions for enterprise clients. We focus on creating cutting-edge applications that solve real-world problems.',
+    culture: [
+      'Innovation-driven environment',
+      'Collaborative team culture',
+      'Work-life balance focused',
+      'Continuous learning encouraged'
+    ]
+  },
+  imageUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&h=800&fit=crop'
+}
 
 export default function LandingPage() {
   const router = useRouter()
@@ -105,6 +150,10 @@ export default function LandingPage() {
     } else {
       window.location.href = href
     }
+  }
+
+  const handleSwipe = (direction: 'left' | 'right', reason?: string) => {
+    console.log(`Swiped ${direction}${reason ? ` with reason: ${reason}` : ''}`)
   }
 
   return (
@@ -424,6 +473,22 @@ export default function LandingPage() {
           </motion.div>
         </div>
       )}
+
+      {/* Job Card Section */}
+      <section id="job-card" className="py-24 px-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-gray-900/50 to-[#0A0118]" />
+        <div className="relative max-w-7xl mx-auto">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-3xl font-bold text-center mb-12 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent"
+          >
+            Featured Job
+          </motion.h2>
+          <JobCard {...sampleJob} onSwipe={handleSwipe} />
+        </div>
+      </section>
     </div>
   )
 } 
