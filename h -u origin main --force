@@ -1,0 +1,11 @@
+[33mcommit 36d8227268813028a39f746f620a43de4f00525f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m
+Author: Your Name <your.email@example.com>
+Date:   Wed Jan 22 11:53:48 2025 +0530
+
+    Save current state: Landing page, Job cards, and Blog functionality complete
+
+[33mcommit b7f3dd0b31dbf146b6ca8198e99c6a2b8f476a48[m
+Author: Your Name <your.email@example.com>
+Date:   Wed Jan 22 03:52:35 2025 +0530
+
+    Initial commit: Job matching app with blog section
