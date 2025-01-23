@@ -12,7 +12,7 @@ async function main() {
       email: 'employer@test.com',
       name: 'Tech Corp',
       role: 'EMPLOYER',
-      password: await hash('password123', 12),
+      hashedPassword: await hash('password123', 12),
     },
   })
 
@@ -24,7 +24,7 @@ async function main() {
       email: 'candidate1@test.com',
       name: 'John Doe',
       role: 'CANDIDATE',
-      password: await hash('password123', 12),
+      hashedPassword: await hash('password123', 12),
       profile: {
         create: {
           title: 'Senior Software Engineer',
@@ -45,7 +45,7 @@ async function main() {
       email: 'candidate2@test.com',
       name: 'Jane Smith',
       role: 'CANDIDATE',
-      password: await hash('password123', 12),
+      hashedPassword: await hash('password123', 12),
       profile: {
         create: {
           title: 'UX Designer',
