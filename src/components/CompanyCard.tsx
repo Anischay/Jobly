@@ -1,29 +1,31 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { FaUser } from 'react-icons/fa'
+import { FaBriefcase } from 'react-icons/fa'
 
-interface CandidateCardProps {
+interface CompanyCardProps {
   name: string
   title: string
   description: string
-  experience: string
-  skills: string[]
-  matchScore?: number
+  location: string
+  companySize: string
+  activeJobs: number
+  totalHires: number
   onClick?: () => void
   className?: string
 }
 
-export function CandidateCard({
+export function CompanyCard({
   name,
   title,
   description,
-  experience,
-  skills,
-  matchScore,
+  location,
+  companySize,
+  activeJobs,
+  totalHires,
   onClick,
   className = ''
-}: CandidateCardProps) {
+}: CompanyCardProps) {
   return (
     <motion.button
       whileHover={{ scale: 1.02 }}
@@ -33,7 +35,7 @@ export function CandidateCard({
     >
       <div className="flex items-start gap-3 h-full">
         <div className="p-2.5 bg-purple-500/10 rounded-lg shrink-0">
-          <FaUser className="text-purple-400 text-lg" />
+          <FaBriefcase className="text-purple-400 text-lg" />
         </div>
         <div className="flex-1 flex flex-col min-w-0">
           <div>
@@ -44,24 +46,17 @@ export function CandidateCard({
             <div className="space-y-2.5">
               <p className="text-sm text-white font-medium">{title}</p>
               <div className="space-y-1">
-                <p className="text-xs text-gray-400">{experience}</p>
+                <p className="text-xs text-gray-400">{location}</p>
+                <p className="text-xs text-gray-400">{companySize} employees</p>
               </div>
-              <div className="space-y-2">
-                {matchScore && (
-                  <div className="bg-gray-900/50 px-2.5 py-1 rounded-lg inline-flex items-center text-xs">
-                    <span className="text-purple-400 font-medium">{matchScore}%</span>
-                    <span className="text-gray-400 ml-1">Match Score</span>
-                  </div>
-                )}
-                <div className="flex flex-wrap gap-1">
-                  {skills.map(skill => (
-                    <span
-                      key={skill}
-                      className="px-1.5 py-0.5 bg-gray-900/50 text-gray-400 rounded text-xs"
-                    >
-                      {skill}
-                    </span>
-                  ))}
+              <div className="flex gap-2 text-xs">
+                <div className="bg-gray-900/50 px-2.5 py-1 rounded-lg">
+                  <span className="text-purple-400 font-medium">{activeJobs}</span>
+                  <span className="text-gray-400 ml-1">Active Jobs</span>
+                </div>
+                <div className="bg-gray-900/50 px-2.5 py-1 rounded-lg">
+                  <span className="text-purple-400 font-medium">{totalHires}</span>
+                  <span className="text-gray-400 ml-1">Total Hires</span>
                 </div>
               </div>
             </div>

@@ -205,6 +205,4 @@ export const JobCard = ({ job, featured = false }: JobCardProps) => {
       </div>
     </motion.div>
   )
-}
-
-export default JobCard 
+} 
