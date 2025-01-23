@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useRouter } from 'next/navigation'
-import { FaBriefcase, FaSearch, FaUserTie, FaLightbulb, FaHandshake, FaRocket, FaBars, FaTimes, FaHeart, FaComments, FaStar, FaGraduationCap, FaPalette, FaCogs } from 'react-icons/fa'
+import { FaBriefcase, FaSearch, FaUserTie, FaLightbulb, FaHandshake, FaRocket, FaBars, FaTimes, FaHeart, FaComments, FaStar, FaGraduationCap, FaPalette, FaCogs, FaArrowRight } from 'react-icons/fa'
 import CountdownTimer from '@/components/CountdownTimer'
 import MatchingSystem from '@/components/MatchingSystem'
 
@@ -180,7 +180,7 @@ export default function LandingPage() {
         </div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="text-center">
+      <div className="text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -222,7 +222,7 @@ export default function LandingPage() {
               className="flex flex-col sm:flex-row gap-6 justify-center"
             >
               <button
-                onClick={() => setShowRoleModal(true)}
+                onClick={() => router.push('/early-access')}
                 className="group relative px-8 py-4 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl text-lg font-medium overflow-hidden transition-all hover:scale-105"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 transition-transform group-hover:translate-y-full" />
@@ -230,10 +230,7 @@ export default function LandingPage() {
               </button>
               
               <button
-                onClick={() => {
-                  setIsDemoMode(true)
-                  setShowRoleModal(true)
-                }}
+                onClick={() => router.push('/demo')}
                 className="group relative px-8 py-4 rounded-xl text-lg font-medium overflow-hidden transition-all hover:scale-105 border border-purple-400/30"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 transition-transform group-hover:translate-y-full" />
@@ -274,15 +271,39 @@ export default function LandingPage() {
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                whileHover={{ 
+                  scale: 1.05,
+                  transition: { duration: 0.2 }
+                }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className={`p-6 rounded-2xl bg-gradient-to-b ${feature.gradient} backdrop-blur-sm border border-purple-400/20`}
+                className={`p-6 rounded-2xl bg-gradient-to-b ${feature.gradient} backdrop-blur-sm border border-purple-400/20 transform-gpu hover:shadow-2xl hover:shadow-purple-500/10 cursor-pointer`}
               >
-                <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center mb-4">
-                  {feature.icon}
+                <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <motion.div
+                    whileHover={{ rotate: 360 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    {feature.icon}
+                  </motion.div>
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-2">{feature.title}</h3>
+                <motion.h3 
+                  className="text-xl font-semibold text-white mb-2"
+                  whileHover={{ x: 5 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {feature.title}
+                </motion.h3>
                 <p className="text-purple-200/60">{feature.description}</p>
+                <motion.div
+                  className="mt-4 flex items-center text-purple-400 text-sm font-medium"
+                  initial={{ opacity: 0 }}
+                  whileHover={{ opacity: 1, x: 5 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  Learn more
+                  <FaArrowRight className="ml-2 text-xs" />
+                </motion.div>
               </motion.div>
             ))}
           </div>
@@ -307,15 +328,35 @@ export default function LandingPage() {
                 key={index}
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
+                whileHover={{ 
+                  scale: 1.05,
+                  transition: { duration: 0.2 }
+                }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="p-6 bg-gray-900/50 backdrop-blur-sm rounded-xl border border-purple-400/20 text-center group hover:bg-purple-500/5 transition-colors"
+                className="p-6 bg-gray-900/50 backdrop-blur-sm rounded-xl border border-purple-400/20 text-center group hover:bg-purple-500/5 transition-all transform-gpu hover:shadow-xl hover:shadow-purple-500/10 cursor-pointer"
               >
-                <div className="w-16 h-16 mx-auto bg-purple-500/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-purple-500/20 transition-colors">
+                <motion.div 
+                  className="w-16 h-16 mx-auto bg-purple-500/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-purple-500/20 transition-all"
+                  whileHover={{ rotate: 360, scale: 1.1 }}
+                  transition={{ duration: 0.5 }}
+                >
                   {industry.icon}
-                </div>
-                <h3 className="text-lg font-semibold text-white mb-1">{industry.name}</h3>
+                </motion.div>
+                <motion.h3 
+                  className="text-lg font-semibold text-white mb-1"
+                  whileHover={{ x: 3 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {industry.name}
+                </motion.h3>
                 <p className="text-sm text-purple-200/60">{industry.jobCount}+ jobs</p>
+                <motion.div
+                  className="mt-3 text-purple-400 text-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  whileHover={{ x: 3 }}
+                >
+                  View jobs <FaArrowRight className="ml-2 text-xs" />
+                </motion.div>
               </motion.div>
             ))}
           </div>
@@ -352,7 +393,7 @@ export default function LandingPage() {
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
             <button
-              onClick={() => setShowRoleModal(true)}
+              onClick={() => router.push('/early-access')}
               className="px-8 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-xl hover:from-purple-600 hover:to-blue-600 font-medium"
             >
               Get Early Access

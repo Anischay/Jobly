@@ -2,14 +2,11 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-})
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Jobly - Find Your Perfect Match',
-  description: 'AI-Powered recruitment platform that revolutionizes hiring through intelligent matchmaking.',
+  title: 'Jobly',
+  description: 'Find your next career opportunity',
 }
 
 export default function RootLayout({
@@ -18,10 +15,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className={`${inter.className} antialiased`}>
-        {children}
-      </body>
+    <html lang="en">
+      <body className={inter.className}>{children}</body>
     </html>
   )
 } 

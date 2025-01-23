@@ -15,18 +15,19 @@ export default function CountdownTimer() {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, minutes: 0, seconds: 0 })
 
   useEffect(() => {
+    const launchDate = new Date('2025-04-07T00:00:00')
+
     const calculateTimeLeft = () => {
-      const launchDate = new Date('2025-04-07T00:00:00')
       const now = new Date()
-      const difference = +launchDate - +now
+      const difference = launchDate.getTime() - now.getTime()
 
       if (difference > 0) {
-        const days = Math.floor(difference / (1000 * 60 * 60 * 24))
-        const hours = Math.floor((difference / (1000 * 60 * 60)) % 24)
-        const minutes = Math.floor((difference / 1000 / 60) % 60)
-        const seconds = Math.floor((difference / 1000) % 60)
-
-        setTimeLeft({ days, hours, minutes, seconds })
+        setTimeLeft({
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+          minutes: Math.floor((difference / 1000 / 60) % 60),
+          seconds: Math.floor((difference / 1000) % 60)
+        })
       }
     }
 
@@ -58,16 +59,7 @@ export default function CountdownTimer() {
   )
 
   return (
-    <div className="w-full max-w-3xl mx-auto text-center">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="inline-flex items-center px-6 py-2 rounded-full border border-purple-400/30 bg-purple-500/10 text-purple-300 mb-12"
-      >
-        <FaClock className="mr-2 text-purple-400" />
-        Time Until Launch
-      </motion.div>
-
+    <div className="text-center">
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -92,12 +84,18 @@ export default function CountdownTimer() {
         transition={{ delay: 0.2 }}
         className="mt-12 space-y-4"
       >
-        <p className="text-xl text-purple-200/80">
+        <motion.p 
+          className="text-xl text-purple-200/80"
+          whileHover={{ scale: 1.02 }}
+        >
           Get ready for a revolutionary job matching experience
-        </p>
-        <p className="text-purple-200/60">
+        </motion.p>
+        <motion.p 
+          className="text-purple-200/60"
+          whileHover={{ scale: 1.02 }}
+        >
           Join our waitlist to be among the first to experience the future of recruitment
-        </p>
+        </motion.p>
       </motion.div>
     </div>
   )

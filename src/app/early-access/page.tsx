@@ -4,13 +4,15 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { SetupWizard } from '@/components/SetupWizard'
 import { FaGoogle, FaArrowLeft } from 'react-icons/fa'
+import { useRouter } from 'next/navigation'
 
-export default function DemoPage() {
+export default function EarlyAccessPage() {
   const [showSetup, setShowSetup] = useState(false)
-  const [isSignUp, setIsSignUp] = useState(false)
+  const [isSignUp, setIsSignUp] = useState(true) // Default to sign up for early access
   const [userType, setUserType] = useState<'candidate' | 'recruiter' | null>(null)
+  const router = useRouter()
 
-  const handleStartDemo = () => {
+  const handleStartSetup = () => {
     setShowSetup(true)
   }
 
@@ -22,6 +24,13 @@ export default function DemoPage() {
     }
   }
 
+  const handleComplete = (data: any) => {
+    // Here you would typically send the data to your backend
+    console.log('Setup completed:', data)
+    // Redirect to the appropriate dashboard
+    router.push(`/dashboard/${userType}`)
+  }
+
   if (showSetup) {
     return (
       <div>
@@ -31,7 +40,7 @@ export default function DemoPage() {
         >
           <FaArrowLeft /> Back
         </button>
-        <SetupWizard type={userType!} onComplete={(data) => console.log('Setup completed:', data)} />
+        <SetupWizard type={userType!} onComplete={handleComplete} />
       </div>
     )
   }
@@ -91,7 +100,7 @@ export default function DemoPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent"
         >
-          {isSignUp ? 'Create Account' : 'Welcome Back'}
+          Get Early Access
         </motion.h1>
         
         <motion.div 
@@ -146,10 +155,10 @@ export default function DemoPage() {
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={handleStartDemo}
+              onClick={handleStartSetup}
               className="w-full px-4 py-2 bg-purple-500 text-white rounded-lg font-medium hover:bg-purple-600"
             >
-              {isSignUp ? 'Sign Up' : 'Sign In'}
+              {isSignUp ? 'Get Early Access' : 'Sign In'}
             </motion.button>
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -162,7 +171,7 @@ export default function DemoPage() {
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={handleStartDemo}
+              onClick={handleStartSetup}
               className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg font-medium hover:bg-gray-600 flex items-center justify-center gap-2"
             >
               <FaGoogle />
