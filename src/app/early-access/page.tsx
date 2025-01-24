@@ -5,15 +5,74 @@ import { motion } from 'framer-motion'
 import { SetupWizard } from '@/components/SetupWizard'
 import { FaGoogle, FaArrowLeft } from 'react-icons/fa'
 import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react'
 
 export default function EarlyAccessPage() {
   const [showSetup, setShowSetup] = useState(false)
-  const [isSignUp, setIsSignUp] = useState(true) // Default to sign up for early access
+  const [isSignUp, setIsSignUp] = useState(true)
   const [userType, setUserType] = useState<'candidate' | 'recruiter' | null>(null)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [name, setName] = useState('')
   const router = useRouter()
 
-  const handleStartSetup = () => {
-    setShowSetup(true)
+  const handleStartSetup = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (isSignUp) {
+      // Register new user
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          name,
+          role: userType === 'candidate' ? 'CANDIDATE' : 'EMPLOYER',
+        }),
+      })
+
+      if (res.ok) {
+        // After registration, sign in
+        const result = await signIn('credentials', {
+          email,
+          password,
+          redirect: false,
+        })
+
+        if (result?.ok) {
+          setShowSetup(true)
+        } else {
+          console.error('Sign in failed:', result?.error)
+        }
+      } else {
+        const data = await res.json()
+        console.error('Registration failed:', data.message)
+      }
+    } else {
+      // Sign in existing user
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      })
+
+      if (result?.ok) {
+        router.push('/dashboard')
+      } else {
+        console.error('Sign in failed:', result?.error)
+      }
+    }
+  }
+
+  const handleGoogleSignIn = () => {
+    if (!userType) return;
+    signIn('google', { 
+      callbackUrl: '/dashboard',
+      state: userType === 'recruiter' ? 'EMPLOYER' : 'CANDIDATE'
+    })
   }
 
   const handleBack = () => {
@@ -25,9 +84,7 @@ export default function EarlyAccessPage() {
   }
 
   const handleComplete = (data: any) => {
-    // Here you would typically send the data to your backend
     console.log('Setup completed:', data)
-    // Redirect to the appropriate dashboard
     router.push(`/dashboard/${userType}`)
   }
 
@@ -108,76 +165,73 @@ export default function EarlyAccessPage() {
           animate={{ opacity: 1, y: 0 }}
           className="bg-gray-800 rounded-xl p-6 shadow-xl space-y-4"
         >
-          {isSignUp && (
+          <form onSubmit={handleStartSetup} className="space-y-4">
+            {isSignUp && (
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full px-4 py-2 bg-gray-700 rounded-lg border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                  placeholder="Enter your full name"
+                  required
+                />
+              </div>
+            )}
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1">
-                Full Name
+                Email
               </label>
               <input
-                type="text"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-2 bg-gray-700 rounded-lg border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
-                placeholder="Enter your full name"
+                placeholder="Enter your email"
+                required
               />
             </div>
-          )}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
-              placeholder="Enter your email"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
-              Password
-            </label>
-            <input
-              type="password"
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
-              placeholder="Enter your password"
-            />
-          </div>
-          {!isSignUp && (
-            <div className="flex justify-between items-center text-sm">
-              <label className="flex items-center">
-                <input type="checkbox" className="mr-2" />
-                <span className="text-gray-400">Remember me</span>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">
+                Password
               </label>
-              <a href="#" className="text-purple-400 hover:text-purple-300">
-                Forgot password?
-              </a>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-700 rounded-lg border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
+                placeholder="Enter your password"
+                required
+              />
             </div>
-          )}
-          <div className="space-y-3">
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleStartSetup}
+            <button
+              type="submit"
               className="w-full px-4 py-2 bg-purple-500 text-white rounded-lg font-medium hover:bg-purple-600"
             >
               {isSignUp ? 'Get Early Access' : 'Sign In'}
-            </motion.button>
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-700"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-gray-800 text-gray-400">Or continue with</span>
-              </div>
+            </button>
+          </form>
+          
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-700"></div>
             </div>
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleStartSetup}
-              className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg font-medium hover:bg-gray-600 flex items-center justify-center gap-2"
-            >
-              <FaGoogle />
-              Google
-            </motion.button>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-gray-800 text-gray-400">Or continue with</span>
+            </div>
           </div>
+          
+          <button
+            onClick={handleGoogleSignIn}
+            className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg font-medium hover:bg-gray-600 flex items-center justify-center gap-2"
+          >
+            <FaGoogle />
+            Google
+          </button>
+          
           <p className="text-center text-gray-400 text-sm">
             {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
             <button 

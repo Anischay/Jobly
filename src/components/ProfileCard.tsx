@@ -19,66 +19,11 @@ import {
   FaLightbulb,
   FaBuilding
 } from 'react-icons/fa'
+import { Profile } from '@/types'
 
-export interface ProfileCardProps {
-  id: string
-  name: string
-  title: string
-  location: string
-  imageUrl: string
-  fallbackImageUrl?: string
-  videoUrl?: string
-  bio: string
-  skills: string[]
-  projects: {
-    id: string
-    title: string
-    description: string
-    technologies: string[]
-    imageUrl: string
-    fallbackImageUrl?: string
-    liveUrl: string
-    verified: boolean
-  }[]
-  certifications: {
-    id: string
-    name: string
-    issuer: string
-    date: string
-    verified: boolean
-    achievements?: string[]
-  }[]
-  experience: {
-    id: string
-    role: string
-    company: string
-    location: string
-    duration: string
-    description: string
-    achievements: string[]
-    technologies: string[]
-    verified: boolean
-  }[]
-  education: {
-    degree: string
-    institution: string
-    year: string
-    achievements: string[]
-  }[]
-  resumeUrl?: string
-  socialLinks?: {
-    github?: string
-    linkedin?: string
-    portfolio?: string
-    twitter?: string
-    dribbble?: string
-  }
-  companyLinks?: {
-    website?: string
-    linkedin?: string
-  }
-  onSwipe: (direction: 'left' | 'right', reason?: string) => void
-  isCompanyProfile?: boolean
+export interface ProfileCardProps extends Profile {
+  onSwipe: (direction: 'left' | 'right') => void
+  onClick?: () => void
 }
 
 export default function ProfileCard({
@@ -98,7 +43,8 @@ export default function ProfileCard({
   socialLinks = {},
   companyLinks = {},
   onSwipe,
-  isCompanyProfile = false
+  isCompanyProfile = false,
+  onClick
 }: ProfileCardProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [activeSection, setActiveSection] = useState<'story' | 'portfolio' | 'experience' | 'culture'>('story')
@@ -124,7 +70,7 @@ export default function ProfileCard({
 
   const handleShowInterest = () => {
     if (interestReason.trim()) {
-      onSwipe('right', interestReason)
+      onSwipe('right')
       setShowInterestModal(false)
       setInterestReason('')
     }
@@ -178,6 +124,9 @@ export default function ProfileCard({
         zIndex: isExpanded ? 50 : 1,
         y: dragDirection === 'down' ? 0 : dragDirection === 'up' ? 0 : undefined
       }}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      onClick={onClick}
     >
       {/* Drag Handle for Mobile */}
       {isExpanded && (

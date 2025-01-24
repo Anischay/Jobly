@@ -9,6 +9,7 @@ import bcrypt from "bcryptjs"
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as Adapter,
+  debug: true,
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_ID!,
@@ -53,7 +54,7 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   pages: {
-    signIn: '/auth/signin',
+    signIn: '/early-access',
     error: '/auth/error',
   },
   session: {
@@ -67,33 +68,54 @@ export const authOptions: NextAuthOptions = {
       }
       return session
     },
-    async jwt({ token, user, account }) {
+    async signIn({ user, account, profile, email, credentials }) {
+      console.log('SignIn callback:', { user, account, profile });
+      return true
+    },
+    async jwt({ token, user, account, profile, trigger }) {
+      console.log('JWT callback:', { 
+        token, 
+        user, 
+        accountType: account?.type,
+        accountState: account?.state,
+        trigger 
+      });
+
       if (user) {
         token.role = user.role
       }
+      
       // If using OAuth, create a default role for new users
-      if (account && account.type === "oauth" && !token.role) {
+      if (account && account.type === "oauth") {
         const dbUser = await prisma.user.findUnique({
           where: { email: token.email! },
         })
         
         if (!dbUser) {
+          // Use state parameter if available, otherwise default to CANDIDATE
+          const stateStr = account.state as string | undefined;
+          const role = stateStr?.includes("EMPLOYER") ? "EMPLOYER" : "CANDIDATE";
+          console.log('Using role:', role);
+          
           const newUser = await prisma.user.create({
             data: {
               email: token.email!,
               name: token.name,
               image: token.picture,
-              role: "CANDIDATE",
+              role: role,
             },
           })
+          console.log('Created new user:', newUser);
+          
           // Create empty profile
           await prisma.profile.create({
             data: {
               userId: newUser.id,
             },
           })
-          token.role = "CANDIDATE"
+          token.role = role
         } else {
+          console.log('Found existing user:', dbUser);
           token.role = dbUser.role
         }
       }
