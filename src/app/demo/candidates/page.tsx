@@ -1,305 +1,234 @@
 'use client'
 
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { FaArrowLeft } from 'react-icons/fa'
 import ProfileCard from '@/components/ProfileCard'
 
-// Enhanced mock data for demo
 const DEMO_CANDIDATES = [
   {
     id: '1',
-    name: "Alex Chen",
-    title: "Senior Full Stack Engineer",
-    location: "San Francisco, CA",
-    imageUrl: "/avatars/alex.jpg",
-    fallbackImageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&auto=format&fit=crop&q=60",
-    bio: "Full stack engineer with 8+ years of experience building scalable web applications. Previously at Stripe and Google. Passionate about AI/ML and cloud architecture.",
-    skills: [
-      "React", "Node.js", "TypeScript", "Python",
-      "AWS", "Kubernetes", "TensorFlow", "System Design"
+    name: 'Alex Thompson',
+    title: 'Senior Full Stack Developer',
+    location: 'San Francisco, CA',
+    imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=500&fit=crop',
+    bio: 'Passionate developer with 6+ years of experience building scalable web applications. Specialized in React, Node.js, and cloud architecture. Looking for a role where I can lead technical initiatives and mentor junior developers.',
+    skills: ['React', 'Node.js', 'TypeScript', 'AWS', 'MongoDB', 'GraphQL'],
+    experience: [
+      {
+        id: 'exp1',
+        role: 'Senior Full Stack Developer',
+        company: 'TechStart Inc',
+        location: 'San Francisco, CA',
+        duration: '2020 - Present',
+        description: 'Leading development of a high-scale SaaS platform',
+        achievements: [
+          'Led team of 5 developers in rebuilding core platform',
+          'Reduced API response times by 60%',
+          'Implemented microservices architecture',
+          'Mentored 3 junior developers'
+        ],
+        technologies: ['React', 'Node.js', 'AWS'],
+        verified: true
+      },
+      {
+        id: 'exp2',
+        role: 'Full Stack Developer',
+        company: 'DataCorp',
+        location: 'Remote',
+        duration: '2018 - 2020',
+        description: 'Developed data visualization tools',
+        achievements: [
+          'Built real-time analytics dashboard',
+          'Improved data processing speed by 40%',
+          'Implemented automated testing suite'
+        ],
+        technologies: ['Vue.js', 'Python', 'PostgreSQL'],
+        verified: true
+      }
     ],
     projects: [
       {
         id: 'p1',
-        title: "AI-Powered Trading Platform",
-        description: "Built a real-time trading platform using machine learning to predict market trends. Processes $10M+ in daily transactions.",
-        technologies: ["Python", "TensorFlow", "React", "AWS"],
-        imageUrl: "/projects/alex-trading.jpg",
-        fallbackImageUrl: "https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=800&auto=format&fit=crop&q=60",
-        liveUrl: "https://github.com/alexchen/trading-ai",
+        title: 'E-commerce Platform',
+        description: 'Built a full-stack e-commerce platform with real-time inventory management and payment processing.',
+        technologies: ['React', 'Node.js', 'Stripe', 'Redis'],
+        imageUrl: 'https://images.unsplash.com/photo-1557821552-17105176677c?w=500&h=300&fit=crop',
+        fallbackImageUrl: 'https://images.unsplash.com/photo-1557821552-17105176677c?w=500&h=300&fit=crop',
+        liveUrl: 'https://github.com/alexthompson/ecommerce',
         verified: true
       },
       {
         id: 'p2',
-        title: "Real-time Collaboration Suite",
-        description: "Developed an enterprise collaboration platform used by 100k+ users. Featured real-time editing and video conferencing.",
-        technologies: ["WebRTC", "Socket.io", "Redis", "Kubernetes"],
-        imageUrl: "/projects/alex-collab.jpg",
-        fallbackImageUrl: "https://images.unsplash.com/photo-1600132806370-bf17e65e942f?w=800&auto=format&fit=crop&q=60",
-        liveUrl: "https://github.com/alexchen/collab-suite",
-        verified: true
-      }
-    ],
-    experience: [
-      {
-        id: 'e1',
-        role: "Senior Software Engineer",
-        company: "Stripe",
-        location: "San Francisco, CA",
-        duration: "2020 - 2023",
-        description: "Led the core payments infrastructure team, focusing on scalability and reliability",
-        achievements: [
-          "Technical Leadership:",
-          "• Led team of 5 engineers in rebuilding the payment processing pipeline",
-          "• Mentored 3 junior engineers to promotion in 18 months",
-          "• Drove adoption of TypeScript across 15+ services",
-          
-          "System Architecture:",
-          "• Designed microservices architecture processing $50B+ annually",
-          "• Reduced system latency by 40% through innovative caching",
-          "• Implemented real-time fraud detection saving $10M+ annually",
-          
-          "Development & Innovation:",
-          "• Created internal testing framework used by 200+ engineers",
-          "• Published 3 open-source tools with 1000+ GitHub stars",
-          "• Filed 2 patents for payment processing innovations"
-        ],
-        technologies: [
-          "Backend: Go, Node.js, Python",
-          "Infrastructure: Kubernetes, AWS, Terraform",
-          "Data: PostgreSQL, Redis, Kafka",
-          "Practices: Microservices, DDD, TDD"
-        ],
-        verified: true
-      },
-      {
-        id: 'e2',
-        role: "Software Engineer",
-        company: "Google",
-        location: "Mountain View, CA",
-        duration: "2018 - 2020",
-        description: "Core member of Google Cloud Platform's infrastructure team",
-        achievements: [
-          "Technical Impact:",
-          "• Built auto-scaling system handling 1M+ containers",
-          "• Improved system reliability from 99.9% to 99.99%",
-          "• Reduced infrastructure costs by 35% through optimization",
-          
-          "Project Leadership:",
-          "• Led migration of 100+ services to Kubernetes",
-          "• Coordinated with 5 teams across 3 time zones",
-          "• Created technical documentation used by 1000+ developers",
-          
-          "Innovation & Recognition:",
-          "• Received Google Spot Award for performance optimization",
-          "• Contributed to 2 major open-source projects",
-          "• Presented at 3 internal tech conferences"
-        ],
-        technologies: [
-          "Languages: Java, Go, Python",
-          "Cloud: GCP, Kubernetes, Docker",
-          "Tools: Prometheus, Grafana, BigQuery",
-          "Practices: SRE, DevOps, Agile"
-        ],
+        title: 'AI Chat Application',
+        description: 'Developed a real-time chat application with AI-powered language translation and sentiment analysis.',
+        technologies: ['WebSocket', 'Python', 'TensorFlow', 'React'],
+        imageUrl: 'https://images.unsplash.com/photo-1587560699334-cc4ff634909a?w=500&h=300&fit=crop',
+        fallbackImageUrl: 'https://images.unsplash.com/photo-1587560699334-cc4ff634909a?w=500&h=300&fit=crop',
+        liveUrl: 'https://github.com/alexthompson/ai-chat',
         verified: true
       }
     ],
     education: [
       {
-        degree: "M.S. Computer Science",
-        institution: "Stanford University",
-        year: "2018",
+        degree: 'M.S. Computer Science',
+        institution: 'Stanford University',
+        year: '2018',
         achievements: [
-          "Focus on Machine Learning",
-          "4.0 GPA",
-          "Teaching Assistant for AI courses",
-          "Published 2 research papers"
+          'Focus on Distributed Systems',
+          'Research in Cloud Computing',
+          'Teaching Assistant for Web Development'
         ]
       },
       {
-        degree: "B.S. Computer Science",
-        institution: "UC Berkeley",
-        year: "2016",
+        degree: 'B.S. Computer Science',
+        institution: 'UC Berkeley',
+        year: '2016',
         achievements: [
-          "Summa Cum Laude",
-          "President of Coding Club",
-          "Hackathon Winner"
+          'Dean\'s List 2014-2016',
+          'Senior Project: Distributed Database System',
+          'ACM Club President'
         ]
       }
     ],
     certifications: [
       {
-        id: 'c1',
-        name: "AWS Solutions Architect Professional",
-        issuer: "Amazon Web Services",
-        date: "2023",
-        verified: true
+        id: 'cert1',
+        name: 'AWS Solutions Architect',
+        issuer: 'Amazon Web Services',
+        date: '2023',
+        verified: true,
+        achievements: [
+          'Expertise in cloud architecture',
+          'Microservices design patterns',
+          'Serverless applications'
+        ]
       },
       {
-        id: 'c2',
-        name: "Google Cloud Professional Architect",
-        issuer: "Google",
-        date: "2022",
-        verified: true
+        id: 'cert2',
+        name: 'Google Cloud Professional',
+        issuer: 'Google',
+        date: '2022',
+        verified: true,
+        achievements: [
+          'Cloud infrastructure',
+          'Container orchestration',
+          'Cloud security'
+        ]
       }
-    ],
-    socialLinks: {
-      github: "https://github.com/alexchen",
-      linkedin: "https://linkedin.com/in/alexchen",
-      portfolio: "https://alexchen.dev",
-      twitter: "https://twitter.com/alexchen"
-    }
+    ]
   },
   {
     id: '2',
-    name: "Sarah Johnson",
-    title: "Lead Product Designer",
-    location: "New York, NY",
-    imageUrl: "/avatars/sarah.jpg",
-    fallbackImageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&auto=format&fit=crop&q=60",
-    bio: "Product designer with 6+ years of experience creating user-centered digital experiences. Previously at Airbnb and Google. Passionate about inclusive design and design systems.",
-    skills: [
-      "UI/UX Design", "Design Systems", "User Research",
-      "Figma", "Design Leadership", "Prototyping"
-    ],
-    projects: [
+    name: 'Sarah Johnson',
+    title: 'Senior Product Designer',
+    location: 'New York, NY',
+    imageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&h=500&fit=crop',
+    bio: 'Product designer with 5+ years of experience creating user-centered digital experiences. Passionate about accessibility and inclusive design. Looking for opportunities to shape product strategy and mentor junior designers.',
+    skills: ['UI/UX', 'Design Systems', 'Figma', 'User Research', 'Prototyping', 'Design Strategy'],
+    experience: [
       {
-        id: 'p3',
-        title: "Netflix Kids Redesign",
-        description: "Led the redesign of Netflix's kids experience, improving engagement by 45% and reducing cognitive load for young users.",
-        technologies: ["UI/UX", "Animation", "User Testing"],
-        imageUrl: "/projects/sarah-netflix.jpg",
-        fallbackImageUrl: "https://images.unsplash.com/photo-1522542550221-31fd19575a2d?w=800&auto=format&fit=crop&q=60",
-        liveUrl: "https://dribbble.com/sarahjohnson/netflix",
+        id: 'exp1',
+        role: 'Senior Product Designer',
+        company: 'DesignHub',
+        location: 'New York, NY',
+        duration: '2021 - Present',
+        description: 'Leading product design for enterprise SaaS platform',
+        achievements: [
+          'Redesigned core product increasing user engagement by 40%',
+          'Built and maintained company-wide design system',
+          'Led team of 3 designers',
+          'Established user research program'
+        ],
+        technologies: ['Figma', 'Design Systems', 'User Research'],
         verified: true
       },
       {
-        id: 'p4',
-        title: "Inclusive Design System",
-        description: "Created a comprehensive design system focused on accessibility, adopted by 20+ product teams serving 5M+ users.",
-        technologies: ["Design Systems", "Accessibility", "Documentation"],
-        imageUrl: "/projects/sarah-design-system.jpg",
-        fallbackImageUrl: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&auto=format&fit=crop&q=60",
-        liveUrl: "https://dribbble.com/sarahjohnson/design-system",
+        id: 'exp2',
+        role: 'Product Designer',
+        company: 'TechCo',
+        location: 'Remote',
+        duration: '2019 - 2021',
+        description: 'Designed user interfaces for mobile applications',
+        achievements: [
+          'Improved app store rating from 3.8 to 4.6',
+          'Reduced user onboarding time by 50%',
+          'Implemented accessibility improvements'
+        ],
+        technologies: ['UI Design', 'Mobile Design', 'Accessibility'],
         verified: true
       }
     ],
-    experience: [
+    projects: [
       {
-        id: 'e3',
-        role: "Lead Product Designer",
-        company: "Airbnb",
-        location: "New York, NY",
-        duration: "2021 - Present",
-        description: "Leading design strategy for Airbnb's core booking experience",
-        achievements: [
-          "Design Leadership:",
-          "• Led redesign of booking flow used by 150M+ users",
-          "• Built and scaled design system used by 40+ designers",
-          "• Mentored 4 designers to senior positions",
-          
-          "Product Impact:",
-          "• Increased booking conversion by 25% through UX improvements",
-          "• Reduced customer support tickets by 40%",
-          "• Achieved 100% accessibility compliance score",
-          
-          "Innovation & Process:",
-          "• Established new design critique framework",
-          "• Created automated design QA process",
-          "• Led 5 successful design sprints with stakeholders"
-        ],
-        technologies: [
-          "Design: Figma, Framer, Principle",
-          "Research: UserTesting, Maze, Hotjar",
-          "Development: React, CSS, Animation",
-          "Process: Design Ops, Design Systems"
-        ],
+        id: 'p1',
+        title: 'Enterprise Design System',
+        description: 'Created a comprehensive design system used by 50+ designers and developers.',
+        technologies: ['Figma', 'React', 'Storybook'],
+        imageUrl: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=500&h=300&fit=crop',
+        fallbackImageUrl: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=500&h=300&fit=crop',
+        liveUrl: 'https://github.com/sarahjohnson/design-system',
         verified: true
       },
       {
-        id: 'e4',
-        role: "Senior Product Designer",
-        company: "Google",
-        location: "New York, NY",
-        duration: "2019 - 2021",
-        description: "Led design for Google Maps mobile experience",
-        achievements: [
-          "Design Innovation:",
-          "• Redesigned navigation UI used by 1B+ users",
-          "• Created new interaction patterns reducing errors by 60%",
-          "• Won internal design award for accessibility features",
-          
-          "Research & Testing:",
-          "• Conducted 200+ user testing sessions",
-          "• Implemented A/B testing framework for design",
-          "• Published internal case study on inclusive design",
-          
-          "Team Impact:",
-          "• Mentored 3 junior designers",
-          "• Created onboarding program for new designers",
-          "• Led weekly design critiques for team of 12"
-        ],
-        technologies: [
-          "Tools: Figma, Sketch, Adobe CC",
-          "Prototyping: Framer, Principle",
-          "Research: Mixed Methods, Analytics",
-          "Standards: Material Design, WCAG"
-        ],
+        id: 'p2',
+        title: 'Mobile Banking App',
+        description: 'Led the redesign of a mobile banking app used by 1M+ users.',
+        technologies: ['Mobile Design', 'User Research', 'Prototyping'],
+        imageUrl: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=500&h=300&fit=crop',
+        fallbackImageUrl: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=500&h=300&fit=crop',
+        liveUrl: 'https://github.com/sarahjohnson/banking-app',
         verified: true
       }
     ],
     education: [
       {
-        degree: "M.F.A. Design",
-        institution: "Rhode Island School of Design",
-        year: "2019",
+        degree: 'B.F.A. Interaction Design',
+        institution: 'Rhode Island School of Design',
+        year: '2019',
         achievements: [
-          "Focus on Digital Experience Design",
-          "Published thesis on inclusive design",
-          "Teaching Assistant for UI/UX courses"
-        ]
-      },
-      {
-        degree: "B.F.A. Graphic Design",
-        institution: "Parsons School of Design",
-        year: "2017",
-        achievements: [
-          "Dean's List",
-          "Best Portfolio Award",
-          "Design Fellowship Recipient"
+          'Senior Thesis: Accessible Design Systems',
+          'Design Excellence Award',
+          'UX Research Club Founder'
         ]
       }
     ],
     certifications: [
       {
-        id: 'c3',
-        name: "Google UX Design Professional Certificate",
-        issuer: "Google",
-        date: "2023",
-        verified: true
+        id: 'cert1',
+        name: 'Google UX Design Professional',
+        issuer: 'Google',
+        date: '2023',
+        verified: true,
+        achievements: [
+          'User-centered design process',
+          'Design thinking methodology',
+          'Responsive web design'
+        ]
       },
       {
-        id: 'c4',
-        name: "Certified Professional in Accessibility Core Competencies",
-        issuer: "IAAP",
-        date: "2022",
-        verified: true
+        id: 'cert2',
+        name: 'Accessibility Specialist',
+        issuer: 'IAAP',
+        date: '2022',
+        verified: true,
+        achievements: [
+          'Web accessibility standards',
+          'Inclusive design patterns',
+          'Accessibility testing'
+        ]
       }
-    ],
-    socialLinks: {
-      dribbble: "https://dribbble.com/sarahjohnson",
-      linkedin: "https://linkedin.com/in/sarahjohnson",
-      portfolio: "https://sarahjohnson.design",
-      twitter: "https://twitter.com/sarahjohnson"
-    }
+    ]
   }
 ]
 
 export default function DemoCandidatesPage() {
   const router = useRouter()
   const [currentIndex, setCurrentIndex] = useState(0)
+
+  const handleNavigation = (path: string) => {
+    router.push(path)
+  }
 
   const handleSwipe = (direction: 'left' | 'right', reason?: string) => {
     console.log(`Swiped ${direction}${reason ? ` - Reason: ${reason}` : ''}`)
@@ -314,7 +243,7 @@ export default function DemoCandidatesPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <button
-              onClick={() => router.push('/demo')}
+              onClick={() => handleNavigation('/demo')}
               className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
             >
               <FaArrowLeft />

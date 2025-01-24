@@ -103,8 +103,16 @@ export default function LandingPage() {
         element.scrollIntoView({ behavior: 'smooth' })
       }
     } else {
-      window.location.href = href
+      router.push(href)
     }
+  }
+
+  const handleEarlyAccess = () => {
+    router.push('/early-access')
+  }
+
+  const handleWatchDemo = () => {
+    router.push('/demo')
   }
 
   return (
@@ -180,7 +188,7 @@ export default function LandingPage() {
         </div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-      <div className="text-center">
+          <div className="text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -222,7 +230,7 @@ export default function LandingPage() {
               className="flex flex-col sm:flex-row gap-6 justify-center"
             >
               <button
-                onClick={() => router.push('/early-access')}
+                onClick={handleEarlyAccess}
                 className="group relative px-8 py-4 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl text-lg font-medium overflow-hidden transition-all hover:scale-105"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 transition-transform group-hover:translate-y-full" />
@@ -230,7 +238,7 @@ export default function LandingPage() {
               </button>
               
               <button
-                onClick={() => router.push('/demo')}
+                onClick={handleWatchDemo}
                 className="group relative px-8 py-4 rounded-xl text-lg font-medium overflow-hidden transition-all hover:scale-105 border border-purple-400/30"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 transition-transform group-hover:translate-y-full" />
@@ -421,7 +429,7 @@ export default function LandingPage() {
             </h2>
             <div className="space-y-4">
               <button
-                onClick={() => router.push('/jobs')}
+                onClick={() => router.push('/demo/jobs')}
                 className="w-full p-4 bg-gray-800 border-2 border-gray-700 rounded-xl hover:border-blue-500 transition-all transform hover:scale-105 flex items-center gap-4"
               >
                 <FaSearch className="text-2xl text-blue-400" />
@@ -432,7 +440,7 @@ export default function LandingPage() {
               </button>
 
               <button
-                onClick={() => router.push('/candidates')}
+                onClick={() => router.push('/demo/candidates')}
                 className="w-full p-4 bg-gray-800 border-2 border-gray-700 rounded-xl hover:border-blue-500 transition-all transform hover:scale-105 flex items-center gap-4"
               >
                 <FaBriefcase className="text-2xl text-blue-400" />
@@ -441,19 +449,6 @@ export default function LandingPage() {
                   <div className="text-sm text-gray-400">Find top talent</div>
                 </div>
               </button>
-
-              {isDemoMode && (
-                <button
-                  onClick={() => router.push('/demo')}
-                  className="w-full p-4 bg-blue-900/30 border-2 border-blue-800/50 rounded-xl hover:border-blue-500 transition-all transform hover:scale-105 flex items-center gap-4"
-                >
-                  <FaUserTie className="text-2xl text-blue-400" />
-                  <div className="text-left">
-                    <div className="font-semibold text-white">Demo Mode</div>
-                    <div className="text-sm text-gray-400">Experience both perspectives</div>
-                  </div>
-                </button>
-              )}
             </div>
 
             <button
