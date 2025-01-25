@@ -1,41 +1,85 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { FaBuilding, FaMapMarkerAlt, FaDollarSign, FaClock, FaBriefcase, FaArrowRight, FaGraduationCap, FaUsers, FaLaptopCode, FaStar } from 'react-icons/fa'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { 
+  FaMapMarkerAlt, 
+  FaChevronDown, 
+  FaChevronUp,
+  FaBriefcase,
+  FaClock,
+  FaDollarSign,
+  FaBuilding,
+  FaTasks,
+  FaGraduationCap,
+  FaUsers,
+  FaTimes,
+  FaCheck,
+  FaStar,
+  FaLaptopCode,
+  FaArrowRight
+} from 'react-icons/fa'
 
-interface JobCardProps {
+export interface JobCardProps {
   job: {
+    id: string
     title: string
     company: string
     location: string
-    salary: string
     type: string
-    experience: string
-    logo?: string
-    skills: string[]
-    postedAt: string
+    salary: string
     description: string
     requirements?: string[]
+    responsibilities?: string[]
     benefits?: string[]
+    experience?: string
+    logo?: string
+    skills?: string[]
+    postedAt?: string
     teamSize?: string
     techStack?: string[]
     workStyle?: string
     rating?: number
     applicants?: number
-    culture?: {
-      values: string[]
-      perks: string[]
+    companyInfo?: {
+      name: string
+      size: string
+      industry: string
+      description: string
+      culture: string[]
     }
+    imageUrl?: string
   }
   featured?: boolean
+  onSwipe: (direction: 'left' | 'right', reason?: string) => void
 }
 
-export const JobCard = ({ job, featured = false }: JobCardProps) => {
+export const JobCard = ({ job, featured = false, onSwipe }: JobCardProps) => {
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [activeSection, setActiveSection] = useState<'overview' | 'details' | 'company'>('overview')
+  const [showInterestModal, setShowInterestModal] = useState(false)
+  const [interestReason, setInterestReason] = useState('')
+
+  const sections = [
+    { id: 'overview', icon: FaBriefcase, label: 'Overview' },
+    { id: 'details', icon: FaTasks, label: 'Details' },
+    { id: 'company', icon: FaBuilding, label: 'Company' }
+  ]
+
+  const handleShowInterest = () => {
+    if (interestReason.trim()) {
+      onSwipe('right', interestReason)
+      setShowInterestModal(false)
+      setInterestReason('')
+    }
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ scale: 1.02 }}
+      layout
       className={`relative p-6 rounded-xl border ${
         featured 
           ? 'bg-gradient-to-b from-purple-500/10 to-blue-500/10 border-purple-400/30' 
@@ -112,10 +156,12 @@ export const JobCard = ({ job, featured = false }: JobCardProps) => {
               <FaClock className="text-purple-400" />
               {job.type}
             </div>
-            <div className="flex items-center gap-1">
-              <FaBriefcase className="text-purple-400" />
-              {job.experience}
-            </div>
+            {job.experience && (
+              <div className="flex items-center gap-1">
+                <FaBriefcase className="text-purple-400" />
+                {job.experience}
+              </div>
+            )}
             {job.teamSize && (
               <div className="flex items-center gap-1">
                 <FaUsers className="text-purple-400" />
@@ -130,17 +176,19 @@ export const JobCard = ({ job, featured = false }: JobCardProps) => {
             )}
           </div>
 
-          <div className="flex flex-wrap gap-2 mb-4">
-            {job.skills.map((skill, index) => (
-              <motion.span
-                key={index}
-                className="px-3 py-1 bg-purple-500/10 text-purple-300 text-sm rounded-full"
-                whileHover={{ scale: 1.05 }}
-              >
-                {skill}
-              </motion.span>
-            ))}
-          </div>
+          {job.skills && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {job.skills.map((skill, index) => (
+                <motion.span
+                  key={index}
+                  className="px-3 py-1 bg-purple-500/10 text-purple-300 text-sm rounded-full"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  {skill}
+                </motion.span>
+              ))}
+            </div>
+          )}
 
           <p className="text-gray-400 text-sm mb-4 line-clamp-2">
             {job.description}
@@ -173,36 +221,54 @@ export const JobCard = ({ job, featured = false }: JobCardProps) => {
             </div>
           )}
 
-          {job.culture && (
-            <div className="mb-4">
-              <h4 className="text-sm font-medium text-purple-300 mb-2">Company Culture</h4>
-              <div className="flex flex-wrap gap-2">
-                {job.culture.values.slice(0, 3).map((value, index) => (
-                  <span
-                    key={index}
-                    className="px-2 py-1 bg-green-500/10 text-green-300 text-xs rounded-full"
-                  >
-                    {value}
-                  </span>
-                ))}
-              </div>
+          {onSwipe && (
+            <div className="flex justify-between mt-4">
+              <button
+                onClick={() => onSwipe('left')}
+                className="px-4 py-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 transition-colors"
+              >
+                <FaTimes className="text-lg" />
+              </button>
+              <button
+                onClick={() => setShowInterestModal(true)}
+                className="px-4 py-2 bg-green-500/10 text-green-400 rounded-lg hover:bg-green-500/20 transition-colors"
+              >
+                <FaCheck className="text-lg" />
+              </button>
             </div>
           )}
-
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-500">
-              Posted {job.postedAt}
-            </span>
-            <motion.button
-              whileHover={{ x: 5 }}
-              className="flex items-center gap-2 text-purple-400 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity"
-            >
-              View Details
-              <FaArrowRight className="text-xs" />
-            </motion.button>
-          </div>
         </div>
       </div>
+
+      {/* Interest Modal */}
+      {showInterestModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-gray-900 p-6 rounded-xl max-w-md w-full">
+            <h3 className="text-xl font-semibold mb-4">Why are you interested?</h3>
+            <textarea
+              value={interestReason}
+              onChange={(e) => setInterestReason(e.target.value)}
+              className="w-full h-32 bg-gray-800 text-white rounded-lg p-3 mb-4"
+              placeholder="Share why you're interested in this position..."
+            />
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setShowInterestModal(false)}
+                className="px-4 py-2 text-gray-400 hover:text-white"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleShowInterest}
+                className="px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg"
+                disabled={!interestReason.trim()}
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </motion.div>
   )
 } 
