@@ -1,10 +1,17 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { MatchingService } from '@/lib/services/matching'
+import { auth } from '@clerk/nextjs'
 
 export async function POST(request: Request) {
+  const { userId } = auth()
+  
+  if (!userId) {
+    return new NextResponse('Unauthorized', { status: 401 })
+  }
+
   try {
-    const { profileId, direction, test } = await request.json()
+    const { profileId, direction } = await request.json()
 
     if (!profileId || !direction) {
       return NextResponse.json(
@@ -13,16 +20,10 @@ export async function POST(request: Request) {
       )
     }
 
-    // For testing, use a fixed recruiter ID
-    const recruiterId = test ? 'test-recruiter-id' : null // TODO: Get from auth session
-    if (!recruiterId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
     // Record the swipe
-    const swipe = await prisma.profileSwipe.create({
+    const swipe = await prisma.swipe.create({
       data: {
-        recruiterId,
+        userId,
         profileId,
         direction
       }
@@ -30,27 +31,27 @@ export async function POST(request: Request) {
 
     // If swiped right, create a match
     if (direction === 'right') {
-      // Get profile and job details
-      const [profile, recruiter] = await Promise.all([
+      // Get profile and user details
+      const [profile, user] = await Promise.all([
         prisma.profile.findUnique({ where: { id: profileId } }),
-        prisma.recruiter.findUnique({ where: { id: recruiterId } })
+        prisma.user.findUnique({ where: { id: userId } })
       ])
 
-      if (!profile || !recruiter) {
+      if (!profile || !user || user.role !== 'EMPLOYER') {
         return NextResponse.json(
-          { error: 'Profile or recruiter not found' },
+          { error: 'Profile or employer not found' },
           { status: 404 }
         )
       }
 
       // Calculate match scores
       const matchingService = new MatchingService()
-      const matchDetails = await matchingService.calculateMatchScore(profile, recruiter.jobRequirements)
+      const matchDetails = await matchingService.calculateMatchScore(profile, user.jobRequirements)
 
       // Create match record
-      await prisma.profileMatch.create({
+      await prisma.match.create({
         data: {
-          recruiterId,
+          employerId: userId,
           profileId,
           overallScore: matchDetails.overallScore,
           skillMatch: matchDetails.skillMatch,

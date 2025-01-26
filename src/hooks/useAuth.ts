@@ -1,24 +1,24 @@
 'use client'
 
-import { useSession, signOut } from 'next-auth/react'
+import { useClerk, useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 
 export function useAuth() {
-  const { data: session, status } = useSession()
+  const { user, isLoaded } = useUser()
+  const { signOut } = useClerk()
   const router = useRouter()
 
-  const isAuthenticated = status === 'authenticated'
-  const isLoading = status === 'loading'
-  const user = session?.user
+  const isAuthenticated = !!user
+  const isLoading = !isLoaded
 
   const logout = async () => {
-    await signOut({ redirect: false })
-    router.push('/auth/signin')
+    await signOut()
+    router.push('/auth/sign-in')
   }
 
   const checkAuth = () => {
     if (!isAuthenticated && !isLoading) {
-      router.push('/auth/signin')
+      router.push('/auth/sign-in')
     }
   }
 
@@ -28,6 +28,6 @@ export function useAuth() {
     isLoading,
     logout,
     checkAuth,
-    role: user?.role
+    role: user?.publicMetadata?.role as string
   }
 } 

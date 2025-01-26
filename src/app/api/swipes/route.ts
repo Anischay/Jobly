@@ -1,54 +1,48 @@
+import { auth } from '@clerk/nextjs'
 import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
 import { prisma } from '@/lib/prisma'
-import { authOptions } from '@/lib/auth'
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
+  const { userId } = auth()
+  
+  if (!userId) {
+    return new NextResponse('Unauthorized', { status: 401 })
+  }
+
   try {
-    const session = await getServerSession(authOptions)
-
-    if (!session) {
-      return NextResponse.json(
-        { message: 'Unauthorized' },
-        { status: 401 }
-      )
-    }
-
-    const { jobId, direction } = await req.json()
-
-    if (!jobId || !direction) {
-      return NextResponse.json(
-        { message: 'Missing required fields' },
-        { status: 400 }
-      )
-    }
-
-    // Record the swipe
+    const body = await request.json()
     const swipe = await prisma.swipe.create({
       data: {
-        userId: session.user.id,
-        jobListingId: jobId,
-        direction,
+        ...body,
+        userId,
       },
     })
-
-    // If it's a right swipe, create a match
-    if (direction === 'RIGHT') {
-      await prisma.match.create({
-        data: {
-          userId: session.user.id,
-          jobListingId: jobId,
-          status: 'PENDING',
-        },
-      })
-    }
-
     return NextResponse.json(swipe)
   } catch (error) {
-    console.error('Error recording swipe:', error)
-    return NextResponse.json(
-      { message: 'Something went wrong' },
-      { status: 500 }
-    )
+    console.error('Error creating swipe:', error)
+    return new NextResponse('Internal Server Error', { status: 500 })
+  }
+}
+
+export async function GET() {
+  const { userId } = auth()
+  
+  if (!userId) {
+    return new NextResponse('Unauthorized', { status: 401 })
+  }
+
+  try {
+    const swipes = await prisma.swipe.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        jobListing: true,
+      },
+    })
+    return NextResponse.json(swipes)
+  } catch (error) {
+    console.error('Error fetching swipes:', error)
+    return new NextResponse('Internal Server Error', { status: 500 })
   }
 } 

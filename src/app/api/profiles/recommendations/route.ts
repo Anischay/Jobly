@@ -1,42 +1,49 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { DEMO_CANDIDATES } from '@/data/demoCandidates'
+import { auth } from '@clerk/nextjs'
 
 export async function GET(request: Request) {
+  const { userId } = auth()
+  
+  if (!userId) {
+    return new NextResponse('Unauthorized', { status: 401 })
+  }
+
   try {
-    const url = new URL(request.url)
-    const isTestMode = url.searchParams.get('test') === 'true'
-    const role = url.searchParams.get('role')
+    // Get the current user
+    const user = await prisma.user.findUnique({
+      where: { id: userId }
+    })
 
-    if (!isTestMode) {
-      // TODO: Add auth check here
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    if (role !== 'recruiter') {
+    if (!user || user.role !== 'EMPLOYER') {
       return NextResponse.json(
-        { error: 'Invalid role. Must be recruiter.' },
+        { error: 'Invalid role. Must be employer.' },
         { status: 400 }
       )
     }
 
-    // For test mode, return demo candidates
-    if (isTestMode) {
-      return NextResponse.json(DEMO_CANDIDATES)
-    }
-
-    // For production:
-    // 1. Get recruiter's job requirements
-    // 2. Get profiles that match those requirements
-    // 3. Filter out already swiped profiles
-    // 4. Calculate match scores
-    // 5. Sort by match score
-    // 6. Return top N profiles
-
+    // Get profiles that haven't been swiped by this employer
     const profiles = await prisma.profile.findMany({
       take: 10,
+      where: {
+        NOT: {
+          swipes: {
+            some: {
+              userId: userId
+            }
+          }
+        }
+      },
       orderBy: {
         createdAt: 'desc'
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
       }
     })
 
