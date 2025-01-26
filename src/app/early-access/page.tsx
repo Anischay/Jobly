@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { SetupWizard } from '@/components/SetupWizard'
 import { FaGoogle, FaGithub, FaArrowLeft } from 'react-icons/fa'
 import { useRouter } from 'next/navigation'
-import { signIn } from 'next-auth/react'
+import { useSignIn, useSignUp } from "@clerk/nextjs";
 
 export default function EarlyAccessPage() {
   const [showSetup, setShowSetup] = useState(false)
@@ -14,6 +14,8 @@ export default function EarlyAccessPage() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const { signIn, isLoaded: isSignInLoaded } = useSignIn();
+  const { signUp, isLoaded: isSignUpLoaded } = useSignUp();
 
   const handleStartSetup = () => {
     setShowSetup(true)
@@ -31,9 +33,20 @@ export default function EarlyAccessPage() {
     router.push(`/dashboard/${userType}`)
   }
 
-  const handleOAuthSignIn = (provider: 'google' | 'github') => {
-    setIsLoading(true)
-    signIn(provider, { callbackUrl: '/dashboard' })
+  const handleOAuthSignIn = async (provider: 'oauth_google' | 'oauth_github') => {
+    if (!isSignInLoaded || !userType) return;
+    try {
+      setIsLoading(true);
+      await signIn.authenticateWithRedirect({
+        strategy: provider,
+        redirectUrl: '/auth/callback',
+        redirectUrlComplete: `/dashboard/${userType}`
+      });
+    } catch (err) {
+      console.error("OAuth error:", err);
+      setError("Failed to authenticate with provider");
+      setIsLoading(false);
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -46,60 +59,46 @@ export default function EarlyAccessPage() {
     const password = formData.get('password') as string
     const name = formData.get('name') as string
 
-    if (isSignUp) {
-      try {
-        const res = await fetch('/api/auth/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            email, 
-            password, 
-            name, 
-            role: userType?.toUpperCase() 
-          }),
-        })
-
-        const data = await res.json()
-
-        if (!res.ok) {
-          throw new Error(data.message || 'Something went wrong')
-        }
-
-        // Sign in after registration
-        const result = await signIn('credentials', {
-          email,
+    try {
+      if (isSignUp) {
+        if (!isSignUpLoaded) return;
+        
+        const result = await signUp.create({
+          emailAddress: email,
           password,
-          redirect: false,
-        })
+          firstName: name?.split(' ')[0],
+          lastName: name?.split(' ')[1] || '',
+        });
 
-        if (result?.error) {
-          throw new Error('Failed to sign in')
+        if (result.status === "complete") {
+          await signUp.prepareEmailAddressVerification({
+            strategy: "email_code",
+          });
+          handleStartSetup();
+        } else {
+          console.error("Sign up error:", result);
+          setError("Failed to sign up");
         }
-
-        handleStartSetup()
-      } catch (error) {
-        setError(error instanceof Error ? error.message : 'Something went wrong')
-        setIsLoading(false)
-      }
-    } else {
-      try {
-        const result = await signIn('credentials', {
-          email,
+      } else {
+        if (!isSignInLoaded) return;
+        
+        const result = await signIn.create({
+          identifier: email,
           password,
-          redirect: false,
-        })
+        });
 
-        if (result?.error) {
-          setError('Invalid email or password')
-          setIsLoading(false)
-          return
+        if (result.status === "complete") {
+          router.push("/dashboard");
+        } else {
+          console.error("Sign in error:", result);
+          setError("Invalid email or password");
         }
-
-        router.push('/dashboard')
-      } catch (error) {
-        setError('Something went wrong')
-        setIsLoading(false)
       }
+    } catch (err) {
+      console.error("Auth error:", err);
+      setError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -182,16 +181,16 @@ export default function EarlyAccessPage() {
         >
           <div className="grid grid-cols-2 gap-3">
             <button
-              onClick={() => handleOAuthSignIn('google')}
-              disabled={isLoading}
+              onClick={() => handleOAuthSignIn('oauth_google')}
+              disabled={isLoading || !isSignInLoaded}
               className="w-full inline-flex justify-center py-2 px-4 border border-gray-700 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
             >
               <FaGoogle className="w-5 h-5 text-red-500" />
               <span className="ml-2">Google</span>
             </button>
             <button
-              onClick={() => handleOAuthSignIn('github')}
-              disabled={isLoading}
+              onClick={() => handleOAuthSignIn('oauth_github')}
+              disabled={isLoading || !isSignInLoaded}
               className="w-full inline-flex justify-center py-2 px-4 border border-gray-700 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
             >
               <FaGithub className="w-5 h-5" />
@@ -208,7 +207,7 @@ export default function EarlyAccessPage() {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
               <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded">
                 {error}
@@ -250,34 +249,30 @@ export default function EarlyAccessPage() {
                 name="password"
                 required
                 className="w-full px-4 py-2 bg-gray-700 rounded-lg border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500"
-                placeholder="Enter your password"
+                placeholder="Choose a password"
+                minLength={8}
               />
             </div>
 
-            <div className="space-y-3">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                type="submit"
-                disabled={isLoading}
-                className="w-full px-4 py-2 bg-purple-500 text-white rounded-lg font-medium hover:bg-purple-600 disabled:opacity-50"
-              >
-                {isLoading 
-                  ? (isSignUp ? 'Creating Account...' : 'Signing In...') 
-                  : (isSignUp ? 'Get Early Access' : 'Sign In')}
-              </motion.button>
-            </div>
-          </form>
-
-          <p className="text-center text-gray-400 text-sm">
-            {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
-            <button 
-              onClick={() => setIsSignUp(!isSignUp)}
-              className="text-purple-400 hover:text-purple-300"
+            <button
+              type="submit"
+              disabled={isLoading || (!isSignInLoaded && !isSignUpLoaded)}
+              className="w-full py-3 px-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg font-medium hover:from-purple-600 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900 disabled:opacity-50"
             >
-              {isSignUp ? 'Sign in' : 'Sign up'}
+              {isLoading ? 'Loading...' : isSignUp ? 'Create Account' : 'Sign In'}
             </button>
-          </p>
+
+            <p className="text-center text-sm text-gray-400">
+              {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
+              <button
+                type="button"
+                onClick={() => setIsSignUp(!isSignUp)}
+                className="text-purple-400 hover:text-purple-300"
+              >
+                {isSignUp ? 'Sign In' : 'Sign Up'}
+              </button>
+            </p>
+          </form>
         </motion.div>
       </div>
     </div>

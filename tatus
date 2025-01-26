@@ -1,0 +1,6 @@
+[33mcommit f80fa2965b2df15314132e4d8d9459cdd4cceed8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Merge: 11b4c85 2248f14
+Author: Your Name <your.email@example.com>
+Date:   Sat Jan 25 20:05:55 2025 +0530
+
+    fix: resolve merge conflicts in JobCard and landing page

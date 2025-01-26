@@ -1,41 +1,33 @@
-import { withAuth } from 'next-auth/middleware'
-import { NextResponse } from 'next/server'
+import { authMiddleware } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-export default withAuth(
-  function middleware(req) {
-    const token = req.nextauth.token
-    const path = req.nextUrl.pathname
-
-    // Public paths that don't require authentication
-    const publicPaths = ['/auth', '/early-access', '/']
-    if (publicPaths.some(p => path.startsWith(p))) {
-      return NextResponse.next()
+export default authMiddleware({
+  publicRoutes: [
+    "/",
+    "/early-access",
+    "/auth/sign-in",
+    "/auth/sign-up",
+    "/blog",
+    "/contact",
+    "/api/webhooks(.*)",
+    "/api/oauth(.*)"
+  ],
+  afterAuth(auth, req) {
+    // Handle users who aren't authenticated
+    if (!auth.userId && !auth.isPublicRoute) {
+      const signInUrl = new URL('/auth/sign-in', req.url);
+      signInUrl.searchParams.set('redirect_url', req.url);
+      return NextResponse.redirect(signInUrl);
     }
 
-    // Ensure user has role
-    if (!token?.role) {
-      return NextResponse.redirect(new URL('/auth/signin', req.url))
+    // If the user is signed in and trying to access auth pages, redirect them to dashboard
+    if (auth.userId && (req.nextUrl.pathname === '/auth/sign-in' || req.nextUrl.pathname === '/auth/sign-up')) {
+      return NextResponse.redirect(new URL('/dashboard', req.url));
     }
-
-    // Role-based route protection
-    if (path.startsWith('/dashboard/candidate') && token.role !== 'CANDIDATE') {
-      return NextResponse.redirect(new URL('/auth/signin', req.url))
-    }
-
-    if (path.startsWith('/dashboard/employer') && token.role !== 'EMPLOYER') {
-      return NextResponse.redirect(new URL('/auth/signin', req.url))
-    }
-
-    return NextResponse.next()
-  },
-  {
-    callbacks: {
-      authorized: ({ token }) => !!token
-    },
   }
-)
+});
 
-// Specify which routes to protect
 export const config = {
-  matcher: ['/dashboard/:path*', '/jobs/:path*', '/candidates/:path*', '/profile/:path*']
-} 
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+};

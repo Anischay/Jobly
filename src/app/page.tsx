@@ -200,6 +200,18 @@ export default function LandingPage() {
                   {item.label}
                 </button>
               ))}
+              <button
+                onClick={() => router.push('/auth/sign-in')}
+                className="text-gray-300 hover:text-white transition-colors"
+              >
+                Sign In
+              </button>
+              <button
+                onClick={() => router.push('/auth/sign-up')}
+                className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg hover:opacity-90 transition-opacity"
+              >
+                Sign Up
+              </button>
             </div>
 
             {/* Mobile Menu Button */}
@@ -230,6 +242,20 @@ export default function LandingPage() {
                   {item.label}
                 </a>
               ))}
+              <a
+                href="/auth/sign-in"
+                className="block text-gray-300 hover:text-white transition-colors"
+                onClick={() => setShowMobileMenu(false)}
+              >
+                Sign In
+              </a>
+              <a
+                href="/auth/sign-up"
+                className="block text-white bg-gradient-to-r from-blue-500 to-purple-500 px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
+                onClick={() => setShowMobileMenu(false)}
+              >
+                Sign Up
+              </a>
             </div>
           </motion.div>
         )}
