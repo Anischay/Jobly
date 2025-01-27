@@ -11,7 +11,8 @@ export default authMiddleware({
     "/blog",
     "/contact",
     "/api/webhooks(.*)",
-    "/api/oauth(.*)"
+    "/api/oauth(.*)",
+    "/demo(.*)"
   ],
   afterAuth(auth, req) {
     // Handle users who aren't authenticated

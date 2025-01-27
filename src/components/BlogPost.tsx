@@ -32,11 +32,11 @@ export default function BlogPost({
     if (contentRef.current) {
       // Find paragraphs that start with "Key Point:" or contain important phrases
       const paragraphs = contentRef.current.getElementsByTagName('p')
-      for (const p of paragraphs) {
+      Array.from(paragraphs).forEach(p => {
         if (p.textContent?.startsWith('Key Point:')) {
           p.className = 'text-lg font-semibold text-purple-300 my-6 pl-4 border-l-4 border-purple-500'
         }
-      }
+      })
 
       // Add emphasis to specific phrases
       const emphasisPhrases = [

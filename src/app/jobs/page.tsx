@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { FaArrowLeft } from 'react-icons/fa'
-import JobCard from '@/components/JobCard'
+import { JobCard } from '@/components/JobCard'
 
 const sampleJobs = [
   {
@@ -297,7 +297,7 @@ export default function JobsPage() {
       {/* Job Card Section */}
       <div className="pt-20 pb-12">
         <div className="max-w-7xl mx-auto px-4">
-          <JobCard {...sampleJobs[currentJobIndex]} onSwipe={handleSwipe} />
+          <JobCard job={sampleJobs[currentJobIndex]} onSwipe={handleSwipe} />
         </div>
       </div>
     </div>

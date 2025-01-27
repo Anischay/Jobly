@@ -11,11 +11,11 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { profileId, direction } = await request.json()
+    const { jobListingId, direction } = await request.json()
 
-    if (!profileId || !direction) {
+    if (!jobListingId || !direction) {
       return NextResponse.json(
-        { error: 'Profile ID and swipe direction are required' },
+        { error: 'Job listing ID and swipe direction are required' },
         { status: 400 }
       )
     }
@@ -24,35 +24,38 @@ export async function POST(request: Request) {
     const swipe = await prisma.swipe.create({
       data: {
         userId,
-        profileId,
+        jobListingId,
         direction
       }
     })
 
     // If swiped right, create a match
     if (direction === 'right') {
-      // Get profile and user details
-      const [profile, user] = await Promise.all([
-        prisma.profile.findUnique({ where: { id: profileId } }),
-        prisma.user.findUnique({ where: { id: userId } })
+      // Get job listing and user details with profile
+      const [jobListing, user] = await Promise.all([
+        prisma.jobListing.findUnique({ where: { id: jobListingId } }),
+        prisma.user.findUnique({ 
+          where: { id: userId },
+          include: { profile: true }
+        })
       ])
 
-      if (!profile || !user || user.role !== 'EMPLOYER') {
+      if (!jobListing || !user || !user.profile || user.role !== 'CANDIDATE') {
         return NextResponse.json(
-          { error: 'Profile or employer not found' },
+          { error: 'Job listing, candidate, or candidate profile not found' },
           { status: 404 }
         )
       }
 
       // Calculate match scores
       const matchingService = new MatchingService()
-      const matchDetails = await matchingService.calculateMatchScore(profile, user.jobRequirements)
+      const matchDetails = await matchingService.calculateMatchScore(user.profile, jobListing)
 
       // Create match record
       await prisma.match.create({
         data: {
-          employerId: userId,
-          profileId,
+          userId,
+          jobListingId,
           overallScore: matchDetails.overallScore,
           skillMatch: matchDetails.skillMatch,
           experienceMatch: matchDetails.experienceMatch,
@@ -64,9 +67,9 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, swipe })
   } catch (error) {
-    console.error('Error recording profile swipe:', error)
+    console.error('Error recording job swipe:', error)
     return NextResponse.json(
-      { error: 'Failed to record profile swipe' },
+      { error: 'Failed to record job swipe' },
       { status: 500 }
     )
   }

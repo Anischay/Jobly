@@ -7,70 +7,41 @@ import { FaBriefcase, FaSearch, FaUserTie, FaLightbulb, FaHandshake, FaRocket, F
 import CountdownTimer from '@/components/CountdownTimer'
 import MatchingSystem from '@/components/MatchingSystem'
 import { JobCard } from '@/components/JobCard'
+import { LearnMoreModal } from '@/components/LearnMoreModal'
+import { 
+  howItWorksContent, 
+  featuresContent, 
+  forRecruitersContent, 
+  forCandidatesContent 
+} from '@/data/learnMoreContent'
+import { AnimatePresence } from 'framer-motion'
 
 const sampleJob = {
   id: '1',
-  title: 'Senior Full Stack Developer',
-  company: 'TechCorp Solutions',
+  title: 'Senior Frontend Developer',
+  company: 'TechCorp',
   location: 'San Francisco, CA',
   type: 'Full-time',
-  salary: '$120,000 - $180,000',
-  experience: '5+ years',
-  description: 'We are seeking an experienced Full Stack Developer to join our dynamic team. You will be responsible for developing and maintaining web applications, collaborating with cross-functional teams, and mentoring junior developers.',
-  requirements: [
-    "Bachelor's degree in Computer Science or related field",
-    '5+ years of experience with React and Node.js',
-    'Strong understanding of web technologies and best practices',
-    'Experience with cloud platforms (AWS/Azure)',
-    'Excellent problem-solving and communication skills'
-  ],
-  responsibilities: [
-    'Design and implement scalable web applications',
-    'Write clean, maintainable, and efficient code',
-    'Collaborate with product managers and designers',
-    'Mentor junior developers and conduct code reviews',
-    'Participate in architectural decisions'
-  ],
-  benefits: [
-    'Competitive salary and equity package',
-    'Health, dental, and vision insurance',
-    'Flexible work hours and remote options',
-    'Professional development budget',
-    'Generous vacation policy'
-  ],
-  skills: [
-    'React',
-    'Node.js',
-    'TypeScript',
-    'AWS',
-    'GraphQL',
-    'MongoDB'
-  ],
-  postedAt: '2024-03-20',
-  techStack: [
-    'React',
-    'Node.js',
-    'TypeScript',
-    'AWS',
-    'GraphQL',
-    'MongoDB'
-  ],
-  workStyle: 'Hybrid',
-  rating: 4.8,
-  applicants: 45,
+  salary: '$120k - $180k',
+  description: 'Join our team to build the next generation of web applications...',
+  requirements: ['5+ years of React experience', 'Strong TypeScript skills'],
+  responsibilities: ['Lead frontend development', 'Mentor junior developers'],
+  benefits: ['Health insurance', 'Remote work options'],
+  techStack: ['React', 'TypeScript', 'Next.js'],
+  teamSize: '5-10',
+  employeeCount: '50-200',
   companyInfo: {
-    name: 'TechCorp Solutions',
+    name: 'TechCorp',
     size: '50-200 employees',
     industry: 'Software Development',
-    description: 'TechCorp Solutions is a leading software development company specializing in building innovative solutions for enterprise clients. We focus on creating cutting-edge applications that solve real-world problems.',
-    culture: [
-      'Innovation-driven environment',
-      'Collaborative team culture',
-      'Work-life balance focused',
-      'Continuous learning encouraged'
-    ]
+    description: 'TechCorp is a leading software company...',
+    culture: ['Innovation-driven', 'Collaborative', 'Growth-focused'],
+    techStack: ['React', 'TypeScript', 'Next.js'],
+    verified: true
   },
-  imageUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&h=800&fit=crop'
+  imageUrl: '/company-placeholder.jpg',
+  website: 'https://techcorp.com',
+  linkedIn: 'https://linkedin.com/company/techcorp'
 }
 
 export default function LandingPage() {
@@ -81,6 +52,8 @@ export default function LandingPage() {
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const { scrollYProgress } = useScroll()
   const opacity = useTransform(scrollYProgress, [0, 0.3], [1, 0])
+  const [activeModal, setActiveModal] = useState<'howItWorks' | 'features' | 'recruiters' | 'candidates' | string | null>(null)
+  const [customModalContent, setCustomModalContent] = useState<any>(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -95,19 +68,171 @@ export default function LandingPage() {
       title: "Smart Matching",
       description: "Our intelligent algorithm finds the perfect fit based on skills, experience, and cultural alignment.",
       icon: <FaLightbulb className="text-purple-400 text-2xl" />,
-      gradient: "from-purple-500/20 to-blue-500/20"
+      gradient: "from-purple-500/20 to-blue-500/20",
+      content: {
+        sections: [
+          {
+            title: "AI-Powered Matching",
+            description: "Our advanced matching system uses multiple data points to create perfect connections.",
+            items: [
+              "Skills-based matching with deep learning",
+              "Experience level compatibility",
+              "Cultural fit assessment",
+              "Work style and preferences analysis",
+              "Project history alignment"
+            ]
+          },
+          {
+            title: "Real-time Updates",
+            description: "Stay informed with instant updates on your matches.",
+            items: [
+              "Instant match notifications",
+              "Match strength indicators",
+              "Compatibility scores",
+              "Personalized recommendations",
+              "Match quality feedback"
+            ]
+          }
+        ]
+      }
     },
     {
       title: "Interactive Profiles",
       description: "Showcase your personality and skills through video introductions and dynamic portfolios.",
       icon: <FaUserTie className="text-purple-400 text-2xl" />,
-      gradient: "from-blue-500/20 to-purple-500/20"
+      gradient: "from-blue-500/20 to-purple-500/20",
+      content: {
+        sections: [
+          {
+            title: "Rich Media Profiles",
+            description: "Create engaging profiles that showcase your true potential.",
+            items: [
+              "Video introductions",
+              "Interactive portfolio showcase",
+              "Skill visualization",
+              "Achievement timeline",
+              "Project demonstrations"
+            ]
+          },
+          {
+            title: "Verification System",
+            description: "Build trust with verified credentials and experiences.",
+            items: [
+              "Skills assessment badges",
+              "Work history verification",
+              "Education credentials",
+              "Project authenticity checks",
+              "Peer endorsements"
+            ]
+          }
+        ]
+      }
     },
     {
       title: "Smart Collaboration",
       description: "Connect directly with potential matches and schedule interviews seamlessly.",
       icon: <FaHandshake className="text-purple-400 text-2xl" />,
-      gradient: "from-purple-500/20 to-blue-500/20"
+      gradient: "from-purple-500/20 to-blue-500/20",
+      content: {
+        sections: [
+          {
+            title: "Seamless Communication",
+            description: "Engage effectively with your matches through integrated tools.",
+            items: [
+              "In-app messaging system",
+              "Video interview platform",
+              "Calendar integration",
+              "Document sharing",
+              "Meeting scheduling"
+            ]
+          },
+          {
+            title: "Progress Tracking",
+            description: "Monitor and manage your connections efficiently.",
+            items: [
+              "Connection status tracking",
+              "Interview pipeline view",
+              "Follow-up reminders",
+              "Interaction history",
+              "Feedback collection"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+
+  const featureBoxes = [
+    {
+      icon: <FaUserTie className="text-purple-400 text-3xl" />,
+      title: "Create Your Profile",
+      description: "Build your professional profile with skills, experience, and aspirations.",
+      content: {
+        sections: [
+          {
+            title: "Rich Profile Creation",
+            description: "Create a comprehensive professional profile that stands out.",
+            items: [
+              "Add your professional experience and achievements",
+              "Showcase your technical skills and certifications",
+              "Upload portfolio projects with live demos",
+              "Include a video introduction to personalize your profile",
+              "Link your GitHub and LinkedIn profiles for verification"
+            ]
+          },
+          {
+            title: "Skill Assessment",
+            description: "Validate your skills through our comprehensive assessment system.",
+            items: [
+              "Take skill-specific assessments",
+              "Get badges for verified skills",
+              "Complete coding challenges",
+              "Showcase GitHub contributions and projects",
+              "Receive endorsements from peers"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      icon: <FaSearch className="text-purple-400 text-3xl" />,
+      title: "Smart Job Matching",
+      description: "Get matched with opportunities that align with your skills and career goals.",
+      content: {
+        sections: [
+          {
+            title: "AI-Powered Matching",
+            description: "Our advanced algorithms find the perfect job matches for you.",
+            items: [
+              "Skill-based job recommendations",
+              "Culture fit analysis",
+              "Salary range matching",
+              "Location preferences",
+              "Work style compatibility"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      icon: <FaHandshake className="text-purple-400 text-3xl" />,
+      title: "Easy Applications",
+      description: "Apply to jobs with a single click and track your applications.",
+      content: {
+        sections: [
+          {
+            title: "Streamlined Applications",
+            description: "Apply to multiple jobs efficiently and track your progress.",
+            items: [
+              "One-click applications",
+              "Application status tracking",
+              "Interview scheduling",
+              "Direct messaging with recruiters",
+              "Automated follow-ups"
+            ]
+          }
+        ]
+      }
     }
   ]
 
@@ -166,27 +291,58 @@ export default function LandingPage() {
     if (href.startsWith('#')) {
       const element = document.getElementById(href.substring(1))
       if (element) {
-        element.scrollIntoView({ behavior: 'smooth' })
+        const navHeight = 80 // Approximate nav height
+        const elementPosition = element.getBoundingClientRect().top
+        const offsetPosition = elementPosition + window.pageYOffset - navHeight
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        })
       }
     } else {
       router.push(href)
     }
+    setShowMobileMenu(false)
   }
 
-  const handleSwipe = (direction: 'left' | 'right', reason?: string) => {
+  const handleSwipe = (direction: 'left' | 'right' | 'up', reason?: string) => {
     console.log(`Swiped ${direction}${reason ? ` with reason: ${reason}` : ''}`)
+  }
+
+  const modalContent = {
+    howItWorks: {
+      title: 'How It Works',
+      content: howItWorksContent
+    },
+    features: {
+      title: 'Platform Features',
+      content: featuresContent
+    },
+    recruiters: {
+      title: 'For Recruiters',
+      content: forRecruitersContent
+    },
+    candidates: {
+      title: 'For Candidates',
+      content: forCandidatesContent
+    }
   }
 
   return (
     <div className="min-h-screen bg-[#0A0118] text-white overflow-hidden">
       {/* Navigation */}
-      <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-gray-900/95 backdrop-blur-md py-4' : 'py-6'}`}>
+      <nav className={`fixed w-full z-50 transition-all duration-300 ${
+        isScrolled 
+          ? 'bg-gradient-to-r from-gray-900/95 via-purple-900/95 to-gray-900/95 backdrop-blur-md shadow-lg py-3' 
+          : 'bg-transparent py-6'
+      }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                Jobly
-              </span>
+              <a href="#" className="text-2xl font-bold text-white">
+                Jobly<span className="text-purple-500">.</span>
+              </a>
             </div>
 
             {/* Desktop Navigation */}
@@ -195,9 +351,10 @@ export default function LandingPage() {
                 <button
                   key={item.label}
                   onClick={() => handleNavigation(item.href)}
-                  className="text-gray-300 hover:text-white transition-colors"
+                  className="text-gray-300 hover:text-white transition-colors relative group"
                 >
                   {item.label}
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-500 transition-all duration-300 group-hover:w-full"></span>
                 </button>
               ))}
               <button
@@ -208,7 +365,7 @@ export default function LandingPage() {
               </button>
               <button
                 onClick={() => router.push('/auth/sign-up')}
-                className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg hover:opacity-90 transition-opacity"
+                className="px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg hover:opacity-90 transition-opacity"
               >
                 Sign Up
               </button>
@@ -224,41 +381,50 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Mobile Menu */}
-        {showMobileMenu && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="md:hidden bg-gray-900/95 backdrop-blur-md"
-          >
-            <div className="px-4 py-4 space-y-3">
-              {navItems.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className="block text-gray-300 hover:text-white transition-colors"
-                  onClick={() => setShowMobileMenu(false)}
+        {/* Mobile Navigation */}
+        <AnimatePresence>
+          {showMobileMenu && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="md:hidden bg-gray-900/95 backdrop-blur-md"
+            >
+              <div className="px-4 py-4 space-y-4">
+                {navItems.map((item) => (
+                  <button
+                    key={item.label}
+                    onClick={() => {
+                      handleNavigation(item.href)
+                      setShowMobileMenu(false)
+                    }}
+                    className="block w-full text-left text-gray-300 hover:text-white py-2 transition-colors"
+                  >
+                    {item.label}
+                  </button>
+                ))}
+                <button
+                  onClick={() => {
+                    router.push('/auth/sign-in')
+                    setShowMobileMenu(false)
+                  }}
+                  className="block w-full text-left text-gray-300 hover:text-white py-2 transition-colors"
                 >
-                  {item.label}
-                </a>
-              ))}
-              <a
-                href="/auth/sign-in"
-                className="block text-gray-300 hover:text-white transition-colors"
-                onClick={() => setShowMobileMenu(false)}
-              >
-                Sign In
-              </a>
-              <a
-                href="/auth/sign-up"
-                className="block text-white bg-gradient-to-r from-blue-500 to-purple-500 px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
-                onClick={() => setShowMobileMenu(false)}
-              >
-                Sign Up
-              </a>
-            </div>
-          </motion.div>
-        )}
+                  Sign In
+                </button>
+                <button
+                  onClick={() => {
+                    router.push('/auth/sign-up')
+                    setShowMobileMenu(false)
+                  }}
+                  className="block w-full text-white bg-gradient-to-r from-purple-500 to-blue-500 px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
+                >
+                  Sign Up
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
       {/* Hero Section */}
@@ -374,6 +540,10 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 className={`p-6 rounded-2xl bg-gradient-to-b ${feature.gradient} backdrop-blur-sm border border-purple-400/20 transform-gpu hover:shadow-2xl hover:shadow-purple-500/10 cursor-pointer`}
+                onClick={() => {
+                  setActiveModal('feature-' + index)
+                  setCustomModalContent(feature.content)
+                }}
               >
                 <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                   <motion.div
@@ -564,6 +734,21 @@ export default function LandingPage() {
           <JobCard job={sampleJob} onSwipe={handleSwipe} />
         </div>
       </section>
+
+      {/* Modals */}
+      {activeModal && (
+        <LearnMoreModal
+          isOpen={true}
+          onClose={() => {
+            setActiveModal(null)
+            setCustomModalContent(null)
+          }}
+          title={activeModal.startsWith('feature-') 
+            ? features[parseInt(activeModal.split('-')[1])].title 
+            : modalContent[activeModal as keyof typeof modalContent].title}
+          content={customModalContent || modalContent[activeModal as keyof typeof modalContent].content}
+        />
+      )}
     </div>
   )
 } 

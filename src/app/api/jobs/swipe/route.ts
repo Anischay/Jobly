@@ -1,77 +1,90 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { MatchingService } from '@/lib/services/matching'
+import { calculateMatchScore } from '@/lib/services/matching'
 
 export async function POST(request: Request) {
   try {
-    const { jobId, direction, test } = await request.json()
+    const { jobId, direction, userId } = await request.json()
 
-    if (!jobId || !direction) {
+    if (!jobId || !direction || !userId) {
       return NextResponse.json(
-        { error: 'Job ID and swipe direction are required' },
+        { error: 'Missing required fields' },
         { status: 400 }
       )
     }
 
-    // For testing, use a fixed user ID
-    const userId = test ? 'test-user-id' : null // TODO: Get from auth session
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    // Validate direction
+    if (!['left', 'right'].includes(direction)) {
+      return NextResponse.json(
+        { error: 'Invalid direction' },
+        { status: 400 }
+      )
     }
 
-    // Record the swipe
-    const swipe = await prisma.swipe.create({
+    // Get job and profile
+    const [job, profile] = await Promise.all([
+      prisma.jobListing.findUnique({
+        where: { id: jobId }
+      }),
+      prisma.profile.findUnique({
+        where: { userId }
+      })
+    ])
+
+    if (!job || !profile) {
+      return NextResponse.json(
+        { error: 'Job or profile not found' },
+        { status: 404 }
+      )
+    }
+
+    // For right swipes, calculate match and create record
+    if (direction === 'right') {
+      // Calculate match score
+      const matchScore = calculateMatchScore(job, profile)
+
+      // Create match record
+      await prisma.match.create({
+        data: {
+          userId: profile.userId,
+          jobListingId: jobId,
+          status: 'PENDING',
+          overallScore: matchScore
+        }
+      })
+
+      // Update job applications count
+      await prisma.jobListing.update({
+        where: { id: jobId },
+        data: {
+          applicationsCount: {
+            increment: 1
+          }
+        }
+      })
+
+      return NextResponse.json({
+        message: 'Match created successfully',
+        matchScore
+      })
+    }
+
+    // For left swipes, just record the interaction
+    await prisma.swipe.create({
       data: {
-        userId,
+        userId: profile.userId,
         jobListingId: jobId,
         direction
       }
     })
 
-    // If swiped right, create a match
-    if (direction === 'right') {
-      // Get job and profile details
-      const [job, profile] = await Promise.all([
-        prisma.jobListing.findUnique({ where: { id: jobId } }),
-        prisma.profile.findUnique({ where: { userId } })
-      ])
-
-      if (!job || !profile) {
-        return NextResponse.json(
-          { error: 'Job or profile not found' },
-          { status: 404 }
-        )
-      }
-
-      // Calculate match scores
-      const matchingService = new MatchingService()
-      const matchDetails = await matchingService.calculateMatchScore(profile, job)
-
-      // Create match record
-      await prisma.match.create({
-        data: {
-          userId,
-          jobListingId: jobId,
-          overallScore: matchDetails.overallScore,
-          skillMatch: matchDetails.skillMatch,
-          experienceMatch: matchDetails.experienceMatch,
-          cultureFit: matchDetails.cultureFit,
-          status: 'PENDING'
-        }
-      })
-
-      // Increment applications count
-      await prisma.jobListing.update({
-        where: { id: jobId },
-        data: { applicationsCount: { increment: 1 } }
-      })
-    }
-
-    return NextResponse.json({ success: true, swipe })
+    return NextResponse.json({
+      message: 'Swipe recorded successfully'
+    })
   } catch (error) {
-    console.error('Error recording swipe:', error)
+    console.error('Error in swipe handler:', error)
     return NextResponse.json(
-      { error: 'Failed to record swipe' },
+      { error: 'Internal server error' },
       { status: 500 }
     )
   }

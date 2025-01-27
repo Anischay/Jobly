@@ -2,131 +2,78 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { motion } from 'framer-motion'
 import { FaArrowLeft } from 'react-icons/fa'
-import ProfileCard from '@/components/ProfileCard'
+import { JobCard } from '@/components/JobCard'
 
+// Mock job data
 const DEMO_JOBS = [
   {
-    id: '1',
-    name: 'Senior Full Stack Engineer',
-    title: 'Tech Corp',
-    location: 'San Francisco, CA (Hybrid)',
-    imageUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=500&h=500&fit=crop',
-    bio: 'We\'re looking for a Senior Full Stack Engineer to join our rapidly growing team. This role offers an exciting opportunity to work on cutting-edge technologies and shape the future of our platform.\n\nKey Responsibilities:\n• Lead development of new features from conception to deployment\n• Mentor junior developers and promote best practices\n• Collaborate with product and design teams\n• Optimize application performance and scalability\n\nTech Stack:\n• Frontend: React, TypeScript, Next.js\n• Backend: Node.js, PostgreSQL, Redis\n• Infrastructure: AWS, Docker, Kubernetes',
-    skills: ['React', 'Node.js', 'TypeScript', 'AWS', 'PostgreSQL', 'System Design'],
-    experience: [
-      {
-        id: 'exp1',
-        role: 'Requirements',
-        company: 'Experience & Skills',
-        location: 'San Francisco, CA',
-        duration: 'Full-time',
-        description: 'What we\'re looking for in an ideal candidate:',
-        achievements: [
-          '• 5+ years of experience in full-stack development',
-          '• Strong proficiency in React and Node.js',
-          '• Experience with cloud services (AWS/GCP/Azure)',
-          '• Knowledge of system design and scalability',
-          '• Strong problem-solving and communication skills'
-        ],
-        technologies: ['Full Stack', 'Cloud', 'System Design'],
-        verified: true
-      }
-    ],
-    projects: [],
-    education: [],
-    certifications: [
-      {
-        id: 'cert1',
-        name: 'Benefits & Perks',
-        issuer: 'What we offer',
-        date: '2024',
-        verified: true,
-        achievements: [
-          'Competitive salary and equity package',
-          'Health, dental, and vision insurance',
-          'Flexible PTO and remote work options',
-          'Professional development budget',
-          'Modern tech stack and tools'
-        ]
-      }
-    ],
-    isCompanyProfile: true,
-    companyLinks: {
-      website: 'https://techcorp.example',
-      linkedin: 'https://linkedin.com/company/techcorp'
-    }
+    id: 'job1',
+    title: 'Senior Full Stack Developer',
+    company: 'TechCorp',
+    location: 'San Francisco',
+    type: 'FULL_TIME',
+    salary: '$120k - $180k',
+    description: 'Join our innovative team building the next generation of cloud solutions.',
+    requirements: ['5+ years experience', 'React', 'Node.js', 'AWS'],
+    matchScore: 95,
+    logo: '/companies/techcorp.png'
   },
   {
-    id: '2',
-    name: 'Product Designer',
-    title: 'Design Studio Inc',
-    location: 'Remote (US)',
-    imageUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=500&h=500&fit=crop',
-    bio: 'Join our creative team as a Product Designer and help shape the future of digital experiences. We\'re looking for someone who combines creativity with user-centric thinking.\n\nRole Overview:\n• Create beautiful and functional user interfaces\n• Lead the design process from research to implementation\n• Collaborate with developers and stakeholders\n• Build and maintain our design system\n\nOur Design Philosophy:\n• User-centered approach\n• Data-driven decisions\n• Iterative design process\n• Focus on accessibility',
-    skills: ['UI/UX', 'Figma', 'Design Systems', 'User Research', 'Prototyping', 'Design Thinking'],
-    experience: [
-      {
-        id: 'exp1',
-        role: 'Requirements',
-        company: 'Experience & Skills',
-        location: 'Remote',
-        duration: 'Full-time',
-        description: 'What we\'re looking for in an ideal candidate:',
-        achievements: [
-          '• 3+ years of product design experience',
-          '• Strong portfolio showcasing UI/UX work',
-          '• Experience with modern design tools',
-          '• Understanding of design systems',
-          '• Excellent communication skills'
-        ],
-        technologies: ['UI/UX', 'Design Systems', 'Product Design'],
-        verified: true
-      }
-    ],
-    projects: [],
-    education: [],
-    certifications: [
-      {
-        id: 'cert1',
-        name: 'Benefits & Culture',
-        issuer: 'What we offer',
-        date: '2024',
-        verified: true,
-        achievements: [
-          'Competitive compensation package',
-          'Remote-first culture',
-          'Creative freedom and ownership',
-          'Latest design tools and resources',
-          'Regular team retreats'
-        ]
-      }
-    ],
-    isCompanyProfile: true,
-    companyLinks: {
-      website: 'https://designstudio.example',
-      linkedin: 'https://linkedin.com/company/designstudio'
-    }
+    id: 'job2',
+    title: 'Product Designer',
+    company: 'DesignLabs',
+    location: 'Remote',
+    type: 'FULL_TIME',
+    salary: '$90k - $140k',
+    description: 'Shape the future of digital products with our world-class design team.',
+    requirements: ['3+ years experience', 'Figma', 'UI/UX', 'Design Systems'],
+    matchScore: 88,
+    logo: '/companies/designlabs.png'
+  },
+  {
+    id: 'job3',
+    title: 'DevOps Engineer',
+    company: 'CloudScale',
+    location: 'New York',
+    type: 'FULL_TIME',
+    salary: '$130k - $170k',
+    description: 'Build and maintain our cloud infrastructure serving millions of users.',
+    requirements: ['4+ years experience', 'Kubernetes', 'AWS', 'CI/CD'],
+    matchScore: 92,
+    logo: '/companies/cloudscale.png'
   }
 ]
 
 export default function DemoJobsPage() {
   const router = useRouter()
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [currentJobIndex, setCurrentJobIndex] = useState(0)
+  const [swipedJobs, setSwipedJobs] = useState<string[]>([])
 
   const handleNavigation = (path: string) => {
     router.push(path)
   }
 
-  const handleSwipe = (direction: 'left' | 'right', reason?: string) => {
-    console.log(`Swiped ${direction}${reason ? ` - Reason: ${reason}` : ''}`)
-    if (currentIndex < DEMO_JOBS.length - 1) {
-      setCurrentIndex(currentIndex + 1)
+  const handleSwipe = (direction: 'left' | 'right') => {
+    const currentJob = DEMO_JOBS[currentJobIndex]
+    
+    setSwipedJobs(prev => [...prev, currentJob.id])
+    
+    if (direction === 'right') {
+      // Show success message or animation
+      console.log('Liked job:', currentJob.title)
+    }
+
+    // Move to next job
+    if (currentJobIndex < DEMO_JOBS.length - 1) {
+      setCurrentJobIndex(prev => prev + 1)
     }
   }
 
   return (
     <div className="min-h-screen bg-[#0A0118] text-white">
+      {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-md py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
@@ -137,20 +84,48 @@ export default function DemoJobsPage() {
               <FaArrowLeft />
               Back to Demo
             </button>
-            <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-              Job Seeker View
+            <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+              Job Seeker Demo
             </span>
           </div>
         </div>
       </nav>
 
-      <div className="pt-24 px-4 pb-8 max-w-4xl mx-auto flex flex-col items-center">
-        <div className="w-full max-w-md">
-          {currentIndex < DEMO_JOBS.length && (
-            <ProfileCard
-              {...DEMO_JOBS[currentIndex]}
-              onSwipe={handleSwipe}
-            />
+      {/* Main Content */}
+      <div className="pt-20 px-4 pb-8">
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-3">
+              Find Your Next Role
+            </h1>
+            <p className="text-gray-400">
+              Swipe right on jobs you're interested in, left to pass
+            </p>
+          </div>
+
+          {currentJobIndex < DEMO_JOBS.length ? (
+            <div className="relative">
+              <JobCard
+                job={DEMO_JOBS[currentJobIndex]}
+                onSwipe={handleSwipe}
+                featured={true}
+              />
+            </div>
+          ) : (
+            <div className="text-center p-8 bg-gray-800/50 rounded-xl">
+              <h2 className="text-2xl font-bold mb-4">That's all for now!</h2>
+              <p className="text-gray-400 mb-8">
+                Ready to see more jobs matched to your profile?
+              </p>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleNavigation('/early-access')}
+                className="px-8 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors"
+              >
+                Join Early Access
+              </motion.button>
+            </div>
           )}
         </div>
       </div>

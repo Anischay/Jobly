@@ -11,11 +11,6 @@ export default function DemoPage() {
     router.push(path)
   }
 
-  const handleRoleSelect = (role: 'recruiter' | 'jobseeker') => {
-    const path = role === 'recruiter' ? '/demo/candidates' : '/demo/jobs'
-    router.push(path)
-  }
-
   return (
     <div className="min-h-screen bg-[#0A0118] text-white">
       {/* Navigation */}
@@ -40,10 +35,10 @@ export default function DemoPage() {
       <div className="pt-20 px-4 pb-8 max-w-3xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-3">
-            Choose Your Perspective
+            Experience Jobly
           </h1>
           <p className="text-gray-400">
-            Experience Jobly from different viewpoints. Select a role to explore the platform's features and functionality.
+            Try out our platform from different perspectives - no registration required!
           </p>
         </div>
 
@@ -51,7 +46,7 @@ export default function DemoPage() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => handleRoleSelect('recruiter')}
+            onClick={() => handleNavigation('/demo/candidates')}
             className="p-8 bg-gray-800/50 backdrop-blur-sm rounded-xl border border-purple-400/20 hover:border-purple-400/40 transition-all"
           >
             <div className="w-16 h-16 bg-purple-500/10 rounded-xl flex items-center justify-center mb-4">
@@ -59,7 +54,7 @@ export default function DemoPage() {
             </div>
             <h2 className="text-2xl font-semibold mb-2">Recruiter View</h2>
             <p className="text-gray-400 text-sm">
-              Browse candidate profiles, evaluate talent, and find your next team member
+              Browse candidate profiles, evaluate talent, and experience our AI matching system
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               {['AI Matching', 'Smart Filters', 'Quick Connect'].map((feature) => (
@@ -73,7 +68,7 @@ export default function DemoPage() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => handleRoleSelect('jobseeker')}
+            onClick={() => handleNavigation('/demo/jobs')}
             className="p-8 bg-gray-800/50 backdrop-blur-sm rounded-xl border border-purple-400/20 hover:border-purple-400/40 transition-all"
           >
             <div className="w-16 h-16 bg-purple-500/10 rounded-xl flex items-center justify-center mb-4">
@@ -81,7 +76,7 @@ export default function DemoPage() {
             </div>
             <h2 className="text-2xl font-semibold mb-2">Job Seeker View</h2>
             <p className="text-gray-400 text-sm">
-              Discover opportunities, explore companies, and find your dream role
+              Discover opportunities, explore companies, and see how our matching works
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               {['Smart Matching', 'Company Insights', 'Quick Apply'].map((feature) => (
@@ -90,6 +85,18 @@ export default function DemoPage() {
                 </span>
               ))}
             </div>
+          </motion.button>
+        </div>
+
+        <div className="mt-12 text-center">
+          <p className="text-gray-400 mb-4">Ready to get started?</p>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => handleNavigation('/early-access')}
+            className="px-8 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors"
+          >
+            Join Early Access
           </motion.button>
         </div>
       </div>

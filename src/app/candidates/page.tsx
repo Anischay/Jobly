@@ -17,39 +17,111 @@ const SAMPLE_PROFILES = [
     skills: ['React', 'Node.js', 'TypeScript', 'AWS', 'MongoDB', 'GraphQL'],
     projects: [
       {
+        id: 'ecommerce',
         title: 'E-commerce Platform',
         description: 'Built a full-stack e-commerce platform with real-time inventory management and payment processing.',
         technologies: ['React', 'Node.js', 'Stripe', 'Redis'],
-        link: 'https://github.com/alexthompson/ecommerce',
-        image: 'https://images.unsplash.com/photo-1557821552-17105176677c?w=500&h=300&fit=crop'
+        imageUrl: 'https://images.unsplash.com/photo-1557821552-17105176677c?w=500&h=300&fit=crop',
+        fallbackImageUrl: 'https://images.unsplash.com/photo-1557821552-17105176677c?w=500&h=300&fit=crop',
+        liveUrl: 'https://github.com/alexthompson/ecommerce',
+        verified: true
       },
       {
+        id: 'ai-chat',
         title: 'AI-Powered Chat Application',
         description: 'Developed a real-time chat application with AI-powered language translation and sentiment analysis.',
         technologies: ['WebSocket', 'Python', 'TensorFlow', 'React'],
-        link: 'https://github.com/alexthompson/ai-chat',
-        image: 'https://images.unsplash.com/photo-1587560699334-cc4ff634909a?w=500&h=300&fit=crop'
+        imageUrl: 'https://images.unsplash.com/photo-1587560699334-cc4ff634909a?w=500&h=300&fit=crop',
+        fallbackImageUrl: 'https://images.unsplash.com/photo-1587560699334-cc4ff634909a?w=500&h=300&fit=crop',
+        liveUrl: 'https://github.com/alexthompson/ai-chat',
+        verified: true
       }
     ],
     experience: [
       {
-        title: 'Senior Full Stack Developer',
+        id: 'techcorp',
+        role: 'Senior Full Stack Developer',
         company: 'TechCorp Inc.',
+        location: 'San Francisco, CA',
         duration: '2020 - Present',
-        description: 'Leading a team of 5 developers, architecting and implementing scalable web applications.'
+        description: 'Leading a team of 5 developers, architecting and implementing scalable web applications.',
+        achievements: [
+          'Led team of 5 developers in rebuilding core platform',
+          'Reduced API response times by 60%',
+          'Implemented microservices architecture',
+          'Mentored 3 junior developers'
+        ],
+        technologies: ['React', 'Node.js', 'AWS'],
+        verified: true
       },
       {
-        title: 'Full Stack Developer',
+        id: 'startupx',
+        role: 'Full Stack Developer',
         company: 'StartupX',
+        location: 'Remote',
         duration: '2018 - 2020',
-        description: 'Developed and maintained multiple client projects using React and Node.js.'
+        description: 'Developed and maintained multiple client projects using React and Node.js.',
+        achievements: [
+          'Built real-time analytics dashboard',
+          'Improved data processing speed by 40%',
+          'Implemented automated testing suite'
+        ],
+        technologies: ['Vue.js', 'Python', 'PostgreSQL'],
+        verified: true
       }
     ],
-    education: 'BS in Computer Science, Stanford University',
-    links: {
+    education: [
+      {
+        degree: 'M.S. Computer Science',
+        institution: 'Stanford University',
+        year: '2018',
+        achievements: [
+          'Focus on Distributed Systems',
+          'Research in Cloud Computing',
+          'Teaching Assistant for Web Development'
+        ]
+      },
+      {
+        degree: 'B.S. Computer Science',
+        institution: 'UC Berkeley',
+        year: '2016',
+        achievements: [
+          'Dean\'s List 2014-2016',
+          'Senior Project: Distributed Database System',
+          'ACM Club President'
+        ]
+      }
+    ],
+    certifications: [
+      {
+        id: 'aws-cert',
+        name: 'AWS Solutions Architect',
+        issuer: 'Amazon Web Services',
+        date: '2023',
+        verified: true,
+        achievements: [
+          'Expertise in cloud architecture',
+          'Microservices design patterns',
+          'Serverless applications'
+        ]
+      },
+      {
+        id: 'gcp-cert',
+        name: 'Google Cloud Professional',
+        issuer: 'Google',
+        date: '2022',
+        verified: true,
+        achievements: [
+          'Cloud infrastructure',
+          'Container orchestration',
+          'Cloud security'
+        ]
+      }
+    ],
+    socialLinks: {
       github: 'https://github.com/alexthompson',
       linkedin: 'https://linkedin.com/in/alexthompson',
-      website: 'https://alexthompson.dev'
+      portfolio: 'https://alexthompson.dev'
     }
   },
   {
@@ -64,39 +136,101 @@ const SAMPLE_PROFILES = [
     skills: ['UI/UX Design', 'React', 'Figma', 'CSS', 'Animation', 'User Research'],
     projects: [
       {
+        id: 'wellness-app',
         title: 'Health & Wellness App',
         description: 'Designed and developed a mobile-first wellness tracking application with personalized insights.',
         technologies: ['React Native', 'Figma', 'Firebase'],
-        link: 'https://github.com/sarahchen/wellness-app',
-        image: 'https://images.unsplash.com/photo-1576678927484-cc907957088c?w=500&h=300&fit=crop'
+        imageUrl: 'https://images.unsplash.com/photo-1576678927484-cc907957088c?w=500&h=300&fit=crop',
+        fallbackImageUrl: 'https://images.unsplash.com/photo-1576678927484-cc907957088c?w=500&h=300&fit=crop',
+        liveUrl: 'https://github.com/sarahchen/wellness-app',
+        verified: true
       },
       {
+        id: 'design-system',
         title: 'Design System',
         description: 'Created a comprehensive design system for a large enterprise application.',
         technologies: ['Storybook', 'React', 'Styled Components'],
-        link: 'https://github.com/sarahchen/design-system',
-        image: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=500&h=300&fit=crop'
+        imageUrl: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=500&h=300&fit=crop',
+        fallbackImageUrl: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=500&h=300&fit=crop',
+        liveUrl: 'https://github.com/sarahchen/design-system',
+        verified: true
       }
     ],
     experience: [
       {
-        title: 'Senior UI/UX Designer',
+        id: 'designlab',
+        role: 'Senior UI/UX Designer',
         company: 'DesignLab',
+        location: 'New York, NY',
         duration: '2019 - Present',
-        description: 'Leading design initiatives for enterprise clients and mentoring junior designers.'
+        description: 'Leading design initiatives for enterprise clients and mentoring junior designers.',
+        achievements: [
+          'Redesigned core product increasing user engagement by 40%',
+          'Built and maintained company-wide design system',
+          'Led team of 3 designers',
+          'Established user research program'
+        ],
+        technologies: ['Figma', 'Design Systems', 'User Research'],
+        verified: true
       },
       {
-        title: 'Frontend Developer',
+        id: 'creative-agency',
+        role: 'Frontend Developer',
         company: 'CreativeAgency',
+        location: 'Remote',
         duration: '2017 - 2019',
-        description: 'Implemented responsive web designs and interactive prototypes.'
+        description: 'Implemented responsive web designs and interactive prototypes.',
+        achievements: [
+          'Improved app store rating from 3.8 to 4.6',
+          'Reduced user onboarding time by 50%',
+          'Implemented accessibility improvements'
+        ],
+        technologies: ['UI Design', 'Mobile Design', 'Accessibility'],
+        verified: true
       }
     ],
-    education: 'BFA in Digital Design, Parsons School of Design',
-    links: {
+    education: [
+      {
+        degree: 'BFA in Digital Design',
+        institution: 'Parsons School of Design',
+        year: '2017',
+        achievements: [
+          'Senior Thesis: Accessible Design Systems',
+          'Design Excellence Award',
+          'UX Research Club Founder'
+        ]
+      }
+    ],
+    certifications: [
+      {
+        id: 'google-ux',
+        name: 'Google UX Design Professional',
+        issuer: 'Google',
+        date: '2023',
+        verified: true,
+        achievements: [
+          'User-centered design process',
+          'Design thinking methodology',
+          'Responsive web design'
+        ]
+      },
+      {
+        id: 'iaap-cert',
+        name: 'Accessibility Specialist',
+        issuer: 'IAAP',
+        date: '2022',
+        verified: true,
+        achievements: [
+          'Web accessibility standards',
+          'Inclusive design patterns',
+          'Accessibility testing'
+        ]
+      }
+    ],
+    socialLinks: {
       github: 'https://github.com/sarahchen',
       linkedin: 'https://linkedin.com/in/sarahchen',
-      website: 'https://sarahchen.design'
+      portfolio: 'https://sarahchen.design'
     }
   },
   {
@@ -111,39 +245,101 @@ const SAMPLE_PROFILES = [
     skills: ['AWS', 'Kubernetes', 'Docker', 'Terraform', 'Jenkins', 'Python'],
     projects: [
       {
+        id: 'iac-framework',
         title: 'Infrastructure as Code Framework',
         description: 'Developed a comprehensive IaC framework for automating cloud infrastructure deployment.',
         technologies: ['Terraform', 'AWS', 'Python'],
-        link: 'https://github.com/mrodriguez/iac-framework',
-        image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=500&h=300&fit=crop'
+        imageUrl: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=500&h=300&fit=crop',
+        fallbackImageUrl: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=500&h=300&fit=crop',
+        liveUrl: 'https://github.com/mrodriguez/iac-framework',
+        verified: true
       },
       {
+        id: 'monitoring-dashboard',
         title: 'Monitoring Dashboard',
         description: 'Built a real-time monitoring dashboard for microservices infrastructure.',
         technologies: ['Grafana', 'Prometheus', 'ELK Stack'],
-        link: 'https://github.com/mrodriguez/monitoring-dashboard',
-        image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&h=300&fit=crop'
+        imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&h=300&fit=crop',
+        fallbackImageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&h=300&fit=crop',
+        liveUrl: 'https://github.com/mrodriguez/monitoring-dashboard',
+        verified: true
       }
     ],
     experience: [
       {
-        title: 'Senior DevOps Engineer',
+        id: 'cloudtech',
+        role: 'Senior DevOps Engineer',
         company: 'CloudTech Solutions',
+        location: 'Austin, TX',
         duration: '2021 - Present',
-        description: 'Leading cloud infrastructure and DevOps initiatives for enterprise clients.'
+        description: 'Leading cloud infrastructure and DevOps initiatives for enterprise clients.',
+        achievements: [
+          'Reduced deployment time by 70%',
+          'Implemented zero-downtime deployments',
+          'Automated CI/CD pipelines',
+          'Reduced cloud costs by 40%'
+        ],
+        technologies: ['AWS', 'Kubernetes', 'Terraform'],
+        verified: true
       },
       {
-        title: 'DevOps Engineer',
+        id: 'techstart',
+        role: 'DevOps Engineer',
         company: 'TechStart Inc.',
+        location: 'Remote',
         duration: '2019 - 2021',
-        description: 'Implemented CI/CD pipelines and managed cloud infrastructure.'
+        description: 'Implemented CI/CD pipelines and managed cloud infrastructure.',
+        achievements: [
+          'Built automated testing framework',
+          'Implemented infrastructure monitoring',
+          'Reduced system downtime by 60%'
+        ],
+        technologies: ['Docker', 'Jenkins', 'AWS'],
+        verified: true
       }
     ],
-    education: 'MS in Computer Engineering, University of Texas',
-    links: {
+    education: [
+      {
+        degree: 'MS in Computer Engineering',
+        institution: 'University of Texas',
+        year: '2019',
+        achievements: [
+          'Focus on Cloud Computing',
+          'Research in Container Orchestration',
+          'Teaching Assistant for DevOps Course'
+        ]
+      }
+    ],
+    certifications: [
+      {
+        id: 'aws-pro',
+        name: 'AWS DevOps Professional',
+        issuer: 'Amazon Web Services',
+        date: '2023',
+        verified: true,
+        achievements: [
+          'CI/CD pipelines',
+          'Infrastructure automation',
+          'Security best practices'
+        ]
+      },
+      {
+        id: 'cka',
+        name: 'Certified Kubernetes Administrator',
+        issuer: 'Cloud Native Computing Foundation',
+        date: '2022',
+        verified: true,
+        achievements: [
+          'Container orchestration',
+          'Cluster management',
+          'Application deployment'
+        ]
+      }
+    ],
+    socialLinks: {
       github: 'https://github.com/mrodriguez',
       linkedin: 'https://linkedin.com/in/mrodriguez',
-      website: 'https://mrodriguez.tech'
+      portfolio: 'https://mrodriguez.tech'
     }
   },
   {
@@ -158,39 +354,101 @@ const SAMPLE_PROFILES = [
     skills: ['iOS', 'Swift', 'React Native', 'Firebase', 'UI/UX', 'App Store'],
     projects: [
       {
+        id: 'fitness-app',
         title: 'Fitness Tracking App',
         description: 'Developed a comprehensive fitness tracking app with social features and workout plans.',
         technologies: ['Swift', 'Firebase', 'HealthKit'],
-        link: 'https://github.com/eparker/fitness-app',
-        image: 'https://images.unsplash.com/photo-1461088945293-0c17689e48ac?w=500&h=300&fit=crop'
+        imageUrl: 'https://images.unsplash.com/photo-1461088945293-0c17689e48ac?w=500&h=300&fit=crop',
+        fallbackImageUrl: 'https://images.unsplash.com/photo-1461088945293-0c17689e48ac?w=500&h=300&fit=crop',
+        liveUrl: 'https://github.com/eparker/fitness-app',
+        verified: true
       },
       {
+        id: 'food-delivery',
         title: 'Food Delivery Platform',
         description: 'Built a cross-platform food delivery app with real-time order tracking.',
         technologies: ['React Native', 'Node.js', 'MongoDB'],
-        link: 'https://github.com/eparker/food-delivery',
-        image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&h=300&fit=crop'
+        imageUrl: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&h=300&fit=crop',
+        fallbackImageUrl: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&h=300&fit=crop',
+        liveUrl: 'https://github.com/eparker/food-delivery',
+        verified: true
       }
     ],
     experience: [
       {
-        title: 'Senior Mobile Developer',
+        id: 'appworks',
+        role: 'Senior Mobile Developer',
         company: 'AppWorks Inc.',
+        location: 'Seattle, WA',
         duration: '2020 - Present',
-        description: 'Leading mobile app development projects and mentoring junior developers.'
+        description: 'Leading mobile app development projects and mentoring junior developers.',
+        achievements: [
+          'Led development of 3 major app releases',
+          'Improved app performance by 40%',
+          'Implemented CI/CD for mobile apps',
+          'Mentored 4 junior developers'
+        ],
+        technologies: ['iOS', 'Swift', 'React Native'],
+        verified: true
       },
       {
-        title: 'iOS Developer',
+        id: 'mobilefirst',
+        role: 'iOS Developer',
         company: 'MobileFirst',
+        location: 'Remote',
         duration: '2018 - 2020',
-        description: 'Developed and maintained multiple iOS applications.'
+        description: 'Developed and maintained multiple iOS applications.',
+        achievements: [
+          'Built 5+ successful App Store apps',
+          'Achieved 4.8+ star ratings',
+          'Implemented SwiftUI migration'
+        ],
+        technologies: ['iOS', 'Swift', 'SwiftUI'],
+        verified: true
       }
     ],
-    education: 'BS in Software Engineering, University of Washington',
-    links: {
+    education: [
+      {
+        degree: 'BS in Software Engineering',
+        institution: 'University of Washington',
+        year: '2018',
+        achievements: [
+          'Mobile Development Focus',
+          'Senior Project: AR Navigation App',
+          'Mobile Dev Club President'
+        ]
+      }
+    ],
+    certifications: [
+      {
+        id: 'apple-cert',
+        name: 'Apple Certified iOS Developer',
+        issuer: 'Apple',
+        date: '2023',
+        verified: true,
+        achievements: [
+          'iOS app architecture',
+          'Performance optimization',
+          'App Store guidelines'
+        ]
+      },
+      {
+        id: 'react-native-cert',
+        name: 'React Native Professional',
+        issuer: 'Meta',
+        date: '2022',
+        verified: true,
+        achievements: [
+          'Cross-platform development',
+          'Native modules',
+          'Performance optimization'
+        ]
+      }
+    ],
+    socialLinks: {
       github: 'https://github.com/eparker',
       linkedin: 'https://linkedin.com/in/eparker',
-      website: 'https://emilyparker.dev'
+      portfolio: 'https://emilyparker.dev'
     }
   }
 ]
@@ -249,157 +507,40 @@ export default function CandidatesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 py-12">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 text-transparent bg-clip-text">
-            Discover Your Perfect Match
-          </h1>
-          
-          <div className="max-w-2xl mx-auto space-y-6">
-            {/* Match Quality Indicator */}
-            {sortedProfiles[currentIndex] && (
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20">
-                  <div className="flex gap-2 items-center">
-                    <div className="h-2 w-2 rounded-full bg-purple-400 animate-pulse" />
-                    <span className="text-purple-400 font-medium">
-                      {Math.round(calculateMatchScore(sortedProfiles[currentIndex]).overallScore)}% Match
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Enhanced Sorting Options */}
-            <div className="flex justify-center gap-3 mb-6">
-              <button
-                onClick={() => setSortBy('match')}
-                className={`px-4 py-2 rounded-lg transition-all ${
-                  sortBy === 'match'
-                    ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/30'
-                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-purple-500/20'
-                }`}
-              >
-                Overall Match
+    <div className="min-h-screen bg-[#0A0118] text-white">
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-md py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between">
+            <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+              Candidates
+            </span>
+            <div className="flex items-center gap-4">
+              <button className="text-gray-400 hover:text-white transition-colors">
+                <span className="sr-only">Filter</span>
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                </svg>
               </button>
-              <button
-                onClick={() => setSortBy('cultural')}
-                className={`px-4 py-2 rounded-lg transition-all ${
-                  sortBy === 'cultural'
-                    ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/30'
-                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-purple-500/20'
-                }`}
-              >
-                Cultural Fit
+              <button className="text-gray-400 hover:text-white transition-colors">
+                <span className="sr-only">Sort</span>
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+                </svg>
               </button>
-              <button
-                onClick={() => setSortBy('skill')}
-                className={`px-4 py-2 rounded-lg transition-all ${
-                  sortBy === 'skill'
-                    ? 'bg-purple-500 text-white shadow-lg shadow-purple-500/30'
-                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-purple-500/20'
-                }`}
-              >
-                Skill Match
-              </button>
-            </div>
-
-            {/* Refined Filters */}
-            <div className="flex justify-center gap-4 flex-wrap">
-              <select
-                value={filters.careerStage}
-                onChange={(e) => setFilters({...filters, careerStage: e.target.value})}
-                className="px-4 py-2 rounded-lg bg-gray-800 text-gray-300 border border-purple-500/20 focus:ring-2 focus:ring-purple-500"
-              >
-                <option value="all">Any Career Stage</option>
-                <option value="emerging">Emerging Talent (0-3 years)</option>
-                <option value="established">Established Professional (3-8 years)</option>
-                <option value="leader">Industry Leader (8+ years)</option>
-              </select>
-
-              <select
-                value={filters.roleType}
-                onChange={(e) => setFilters({...filters, roleType: e.target.value})}
-                className="px-4 py-2 rounded-lg bg-gray-800 text-gray-300 border border-purple-500/20 focus:ring-2 focus:ring-purple-500"
-              >
-                <option value="all">Any Role Type</option>
-                <option value="technical">Technical/Engineering</option>
-                <option value="creative">Creative/Design</option>
-                <option value="management">Leadership/Management</option>
-              </select>
-
-              {/* Match Quality Threshold */}
-              <div className="w-full flex items-center gap-4 px-4">
-                <span className="text-gray-400 text-sm">Min Match:</span>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={filters.matchThreshold}
-                  onChange={(e) => setFilters({...filters, matchThreshold: parseInt(e.target.value)})}
-                  className="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-purple-500"
-                />
-                <span className="text-purple-400 text-sm font-medium">{filters.matchThreshold}%</span>
-              </div>
             </div>
           </div>
         </div>
+      </nav>
 
-        {/* Enhanced Profiles Display */}
-        <div className="max-w-2xl mx-auto relative h-[600px]">
-          {sortedProfiles.length === 0 ? (
-            <div className="text-center text-gray-400 mt-8 p-8 rounded-lg border border-purple-500/20 bg-gray-800/50">
-              <p className="text-lg mb-2">No matches found above {filters.matchThreshold}% threshold</p>
-              <p className="text-sm text-gray-500">Try adjusting your filters or lowering the match threshold</p>
-            </div>
-          ) : (
-            sortedProfiles.map((profile, index) => (
-              <div
-                key={profile.id}
-                className={`absolute inset-0 transition-all duration-500 ${
-                  index === currentIndex 
-                    ? 'opacity-100 z-10 scale-100 rotate-0' 
-                    : 'opacity-0 -z-10 scale-95 rotate-3'
-                }`}
-              >
-                <ProfileCard
-                  {...profile}
-                  projects={profile.projects.map(p => ({
-                    id: p.title.toLowerCase().replace(/\s+/g, '-'),
-                    title: p.title,
-                    description: p.description,
-                    technologies: p.technologies,
-                    imageUrl: p.image,
-                    liveUrl: p.link,
-                    verified: true
-                  }))}
-                  experience={profile.experience.map(e => ({
-                    id: `${e.company}-${e.title}`.toLowerCase().replace(/\s+/g, '-'),
-                    role: e.title,
-                    company: e.company,
-                    location: profile.location,
-                    duration: e.duration,
-                    description: e.description,
-                    achievements: [],
-                    technologies: [],
-                    verified: true
-                  }))}
-                  education={[{
-                    degree: profile.education.split(',')[0].trim(),
-                    institution: profile.education.split(',')[1].trim(),
-                    year: '2020',
-                    achievements: []
-                  }]}
-                  socialLinks={{
-                    github: profile.links.github,
-                    linkedin: profile.links.linkedin,
-                    portfolio: profile.links.website
-                  }}
-                  onSwipe={handleSwipe}
-                />
-              </div>
-            ))
+      {/* Main Content */}
+      <div className="pt-24 px-4 pb-8 max-w-4xl mx-auto flex flex-col items-center">
+        <div className="w-full max-w-md">
+          {currentIndex < sortedProfiles.length && (
+            <ProfileCard
+              {...sortedProfiles[currentIndex]}
+              onSwipe={handleSwipe}
+            />
           )}
         </div>
       </div>

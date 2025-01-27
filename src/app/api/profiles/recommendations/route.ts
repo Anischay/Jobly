@@ -26,10 +26,12 @@ export async function GET(request: Request) {
     const profiles = await prisma.profile.findMany({
       take: 10,
       where: {
-        NOT: {
-          swipes: {
-            some: {
-              userId: userId
+        user: {
+          NOT: {
+            swipes: {
+              some: {
+                userId: userId
+              }
             }
           }
         }
