@@ -1,10 +1,15 @@
 .container {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   width: 100%;
   height: 100%;
+  overflow: visible;
   background: #000;
-  overflow: hidden;
   perspective: 1000px;
+  z-index: 50;
 }
 
 /* Layer System */
@@ -60,15 +65,42 @@
 /* Popup Windows */
 .popup {
   position: absolute;
-  width: 380px;
-  background: rgba(20, 20, 30, 0.95);
+  background: rgba(0, 0, 0, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 15px 20px;
   border-radius: 8px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 14px;
+  width: 300px;
   backdrop-filter: blur(10px);
-  overflow: hidden;
-  pointer-events: all;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   transform-origin: center center;
-  will-change: transform;
+  z-index: 100;
+  pointer-events: none;
+  line-height: 1.5;
+  white-space: normal;
+  overflow: visible;
+  transform: translate(-50%, -50%);
+}
+
+.popup.rejection {
+  border-color: rgba(255, 50, 50, 0.4);
+  background: rgba(40, 0, 0, 0.95);
+}
+
+.popup.application {
+  border-color: rgba(50, 150, 255, 0.4);
+  background: rgba(0, 20, 40, 0.95);
+}
+
+.popup.error {
+  border-color: rgba(255, 150, 50, 0.4);
+  background: rgba(40, 20, 0, 0.95);
+}
+
+.popup.notification {
+  border-color: rgba(50, 255, 150, 0.4);
+  background: rgba(0, 40, 20, 0.95);
 }
 
 .popupHeader {
@@ -353,8 +385,8 @@
 }
 
 @keyframes scanline {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(50%); }
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 @keyframes blink {

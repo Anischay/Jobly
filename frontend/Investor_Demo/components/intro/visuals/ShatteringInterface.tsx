@@ -75,33 +75,78 @@ const ShatteringInterface: React.FC = () => {
       const newPopups: PopupWindow[] = [];
       const types: Array<'rejection' | 'application' | 'error' | 'notification'> = 
         ['rejection', 'application', 'error', 'notification'];
-      
-      // Create popups with better distribution
-      const numPopups = 20;
+
+      // Helper for random number in range
+      const random = (min: number, max: number) => 
+        min + Math.random() * (max - min);
+
+      // Check if a position overlaps with existing popups
+      const hasOverlap = (x: number, y: number) => {
+        const minDistance = 25; // Minimum distance between popup centers
+        return newPopups.some(popup => {
+          const dx = popup.x - x;
+          const dy = popup.y - y;
+          return Math.sqrt(dx * dx + dy * dy) < minDistance;
+        });
+      };
+
+      // Get a valid position with no overlap
+      const getValidPosition = (attempts = 50) => {
+        for (let i = 0; i < attempts; i++) {
+          // Divide screen into 3 vertical sections for better distribution
+          const section = Math.floor(Math.random() * 3);
+          let x, y;
+
+          switch (section) {
+            case 0: // Left section
+              x = random(5, 30);
+              y = random(5, 65);
+              break;
+            case 1: // Middle section
+              x = random(35, 65);
+              y = random(5, 65);
+              break;
+            case 2: // Right section
+              x = random(70, 95);
+              y = random(5, 65);
+              break;
+          }
+
+          if (!hasOverlap(x, y)) {
+            return { x, y };
+          }
+        }
+        return null;
+      };
+
+      // Create popups with collision detection
+      const numPopups = 12; // Fewer popups for less crowding
       
       for (let i = 0; i < numPopups; i++) {
+        const position = getValidPosition();
+        if (!position) continue;
+
         const type = types[Math.floor(Math.random() * types.length)];
         const content = popupContents[type][Math.floor(Math.random() * popupContents[type].length)];
-        
-        // Use golden ratio for better distribution
-        const phi = (1 + Math.sqrt(5)) / 2;
-        const theta = 2 * Math.PI * i / phi;
-        const radius = Math.sqrt(i / numPopups);
-        
-        // Convert to percentage with padding from edges
-        const xPercent = 15 + (70 * (0.5 + radius * Math.cos(theta)));
-        const yPercent = 15 + (70 * (0.5 + radius * Math.sin(theta)));
-        
+
         newPopups.push({
           id: i,
-          x: xPercent,
-          y: yPercent,
+          x: position.x,
+          y: position.y,
           type,
           content,
-          delay: i * 0.12
+          // Delay based on position - popups appear from center outward
+          delay: (Math.abs(position.x - 50) + Math.abs(position.y - 35)) * 0.02
         });
       }
-      
+
+      // Sort by distance from center for outward animation
+      newPopups.sort((a, b) => {
+        const distA = Math.abs(a.x - 50) + Math.abs(a.y - 35);
+        const distB = Math.abs(b.x - 50) + Math.abs(b.y - 35);
+        return distA - distB;
+      });
+
       setPopups(newPopups);
     };
 
