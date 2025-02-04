@@ -1,0 +1,151 @@
+.holographicContainer {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(to bottom, #000510, #001529);
+  overflow: hidden;
+}
+
+.holographicCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 4rem;
+  font-weight: bold;
+  color: #4A90E2;
+  text-shadow: 
+    0 0 10px rgba(74, 144, 226, 0.5),
+    0 0 20px rgba(74, 144, 226, 0.3);
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  z-index: 2;
+}
+
+.overlay {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 2;
+}
+
+.glitchText {
+  font-size: 5rem;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 
+    2px 2px #4A90E2,
+    -2px -2px #50E3C2;
+  animation: glitch 1s infinite;
+  opacity: 0;
+  animation: fadeInGlitch 2s forwards;
+}
+
+.tagline {
+  font-size: 1.5rem;
+  color: #50E3C2;
+  margin-top: 1rem;
+  letter-spacing: 0.2rem;
+  opacity: 0;
+  animation: fadeIn 2s forwards 0.5s;
+}
+
+@keyframes glitch {
+  0% {
+    text-shadow: 
+      2px 2px #4A90E2,
+      -2px -2px #50E3C2;
+  }
+  25% {
+    text-shadow: 
+      -2px 2px #4A90E2,
+      2px -2px #50E3C2;
+  }
+  50% {
+    text-shadow: 
+      2px -2px #4A90E2,
+      -2px 2px #50E3C2;
+  }
+  75% {
+    text-shadow: 
+      -2px -2px #4A90E2,
+      2px 2px #50E3C2;
+  }
+  100% {
+    text-shadow: 
+      2px 2px #4A90E2,
+      -2px -2px #50E3C2;
+  }
+}
+
+@keyframes fadeInGlitch {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+    filter: blur(10px);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.1) translateY(-10px);
+    filter: blur(5px);
+  }
+  75% {
+    opacity: 0.8;
+    transform: scale(0.95) translateY(5px);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Add scanlines effect */
+.holographicContainer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    rgba(0, 0, 0, 0.1) 51%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  animation: scanlines 1s linear infinite;
+  z-index: 1;
+}
+
+@keyframes scanlines {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 0 4px;
+  }
+}

@@ -1,0 +1,188 @@
+.container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(45deg, #000022, #000);
+  overflow: hidden;
+}
+
+.connectionCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.side {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.content {
+  width: 100%;
+  padding: 2rem;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+}
+
+.title {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+.iconGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+.personIcon, .companyIcon {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto;
+  position: relative;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.personIcon {
+  background: linear-gradient(45deg, #00ffff, #0088ff);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+.companyIcon {
+  background: linear-gradient(45deg, #ff00ff, #ff0088);
+  box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+}
+
+.frustrationBubble, .searchBubble {
+  position: absolute;
+  top: -20px;
+  right: -10px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  display: flex;
+  gap: 2px;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+}
+
+.frustrationBubble {
+  color: #00ffff;
+}
+
+.searchBubble {
+  color: #ff00ff;
+}
+
+.divider {
+  width: 2px;
+  position: relative;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0 2rem;
+  z-index: 2;
+}
+
+.disconnectedLines {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.line {
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent,
+    rgba(0, 255, 255, 0.5),
+    transparent
+  );
+  opacity: 0.5;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+.backgroundEffects {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+
+/* Add glowing effect to elements */
+.personIcon::after,
+.companyIcon::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  border-radius: 50%;
+  background: inherit;
+  filter: blur(10px);
+  opacity: 0.5;
+  z-index: -1;
+  transition: all 0.3s ease;
+}
+
+.personIcon:hover::after,
+.companyIcon:hover::after {
+  opacity: 0.8;
+  filter: blur(15px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .iconGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .content {
+    padding: 1rem;
+  }
+}
