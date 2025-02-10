@@ -1,0 +1,156 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id         String       @id
+  email      String?      @unique
+  name       String?
+  image      String?
+  role       String?      @default("USER")
+  jobListings JobListing[]
+  accounts      Account[]
+  sessions      Session[]
+  applications  JobApplication[]
+  skills        UserSkill[]
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @default(now()) @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model SkillCategory {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  color       String?  // For UI display
+  skills      Skill[]
+  parentId    String?  // For hierarchical categories
+  parent      SkillCategory?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    SkillCategory[] @relation("CategoryHierarchy")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+}
+
+model Skill {
+  id          String        @id @default(cuid())
+  name        String        @unique
+  category    String        @default("GENERAL")
+  categoryId  String?       // New field to link to SkillCategory
+  skillCategory SkillCategory? @relation(fields: [categoryId], references: [id])
+  jobSkills   JobSkill[]
+  aliases     String?       // Comma-separated alternative names
+  description String?
+  marketDemand SkillMarketDemand?
+  users       UserSkill[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now()) @updatedAt
+}
+
+model JobListing {
+  id           String     @id @default(cuid())
+  title        String
+  company      String
+  location     String
+  type         String
+  description  String
+  requirements String
+  salary       String?
+  userId       String
+  user         User       @relation(fields: [userId], references: [id])
+  skills       JobSkill[]
+  applications JobApplication[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now()) @updatedAt
+}
+
+model JobSkill {
+  id          String     @id @default(cuid())
+  jobListing  JobListing @relation(fields: [jobListingId], references: [id])
+  skill       Skill      @relation(fields: [skillId], references: [id])
+  jobListingId String
+  skillId     String
+  importance  Float      @default(1.0)  // Weight of this skill (0.0 to 1.0)
+  required    Boolean    @default(true) // Whether this skill is required or preferred
+  proficiencyLevel String @default("INTERMEDIATE") // BEGINNER, INTERMEDIATE, EXPERT
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @default(now()) @updatedAt
+
+  @@unique([jobListingId, skillId])
+}
+
+model UserSkill {
+  id          String   @id @default(cuid())
+  userId      String
+  skillId     String
+  proficiency Float    // 0.0 to 1.0
+  yearsOfExperience Int?
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill       Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, skillId])
+}
+
+model JobApplication {
+  id          String     @id @default(cuid())
+  jobId       String
+  userId      String
+  status      String     // PENDING, REVIEWING, ACCEPTED, REJECTED
+  coverLetter String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @default(now()) @updatedAt
+  job         JobListing @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, userId])
+}
+
+model SkillMarketDemand {
+  id          String   @id @default(cuid())
+  skillId     String   @unique
+  skill       Skill    @relation(fields: [skillId], references: [id])
+  trend       String   @default("STABLE") // RISING, STABLE, DECLINING
+  score       Float    @default(0.5)      // 0.0 to 1.0
+  dataSource  String?  // Source of market demand data
+  lastUpdated DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+}
